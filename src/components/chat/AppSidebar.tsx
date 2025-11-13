@@ -197,63 +197,67 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {open && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Chats Recentes</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <ScrollArea className="h-[300px]">
-                <SidebarMenu>
-                  {conversations.length === 0 ? (
+        <SidebarGroup>
+          {open && <SidebarGroupLabel>Chats Recentes</SidebarGroupLabel>}
+          <SidebarGroupContent>
+            <ScrollArea className={open ? "h-[300px]" : "h-[400px]"}>
+              <SidebarMenu>
+                {conversations.length === 0 ? (
+                  open && (
                     <div className="text-sm text-muted-foreground text-center py-4">
                       Nenhuma conversa ainda
                     </div>
-                  ) : (
-                    conversations.map((conv) => (
-                      <SidebarMenuItem key={conv.id}>
-                        <SidebarMenuButton asChild>
-                          <NavLink 
-                            to={`/chat?id=${conv.id}`} 
-                            className="hover:bg-sidebar-accent group relative"
-                          >
-                            <MessageSquare className="h-4 w-4 flex-shrink-0" />
-                            <span className="flex-1 truncate">{conv.title}</span>
-                            <div className={`flex items-center gap-1 transition-opacity ${conv.pinned ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                              <button
-                                onClick={(e) => togglePinConversation(conv.id, conv.pinned, e)}
-                                className={`p-1 rounded transition-colors ${
-                                  conv.pinned 
-                                    ? 'text-primary hover:bg-primary/10' 
-                                    : 'hover:text-primary hover:bg-accent'
-                                }`}
-                                title={conv.pinned ? "Desafixar" : "Fixar"}
-                              >
-                                <Pin className={`h-3 w-3 ${conv.pinned ? 'fill-current' : ''}`} />
-                              </button>
-                              <button
-                                onClick={(e) => openRenameDialog(conv, e)}
-                                className="p-1 rounded transition-colors hover:text-primary hover:bg-accent"
-                                title="Renomear"
-                              >
-                                <Edit3 className="h-3 w-3" />
-                              </button>
-                              <button
-                                onClick={(e) => deleteConversation(conv.id, e)}
-                                className="p-1 rounded transition-colors hover:text-destructive hover:bg-destructive/10"
-                                title="Excluir"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </button>
-                            </div>
-                          </NavLink>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))
-                  )}
-                </SidebarMenu>
-              </ScrollArea>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
+                  )
+                ) : (
+                  conversations.map((conv) => (
+                    <SidebarMenuItem key={conv.id}>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to={`/chat?id=${conv.id}`} 
+                          className={`hover:bg-sidebar-accent group relative ${!open ? "justify-center" : ""}`}
+                        >
+                          <MessageSquare className="h-4 w-4 flex-shrink-0" />
+                          {open && (
+                            <>
+                              <span className="flex-1 truncate">{conv.title}</span>
+                              <div className={`flex items-center gap-1 transition-opacity ${conv.pinned ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                                <button
+                                  onClick={(e) => togglePinConversation(conv.id, conv.pinned, e)}
+                                  className={`p-1 rounded transition-colors ${
+                                    conv.pinned 
+                                      ? 'text-primary hover:bg-primary/10' 
+                                      : 'hover:text-primary hover:bg-accent'
+                                  }`}
+                                  title={conv.pinned ? "Desafixar" : "Fixar"}
+                                >
+                                  <Pin className={`h-3 w-3 ${conv.pinned ? 'fill-current' : ''}`} />
+                                </button>
+                                <button
+                                  onClick={(e) => openRenameDialog(conv, e)}
+                                  className="p-1 rounded transition-colors hover:text-primary hover:bg-accent"
+                                  title="Renomear"
+                                >
+                                  <Edit3 className="h-3 w-3" />
+                                </button>
+                                <button
+                                  onClick={(e) => deleteConversation(conv.id, e)}
+                                  className="p-1 rounded transition-colors hover:text-destructive hover:bg-destructive/10"
+                                  title="Excluir"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))
+                )}
+              </SidebarMenu>
+            </ScrollArea>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter className={`p-4 border-t ${!open ? "p-2" : ""}`}>
