@@ -35,7 +35,6 @@ const navigationItems = [
 
 const getFooterItems = (isAdmin: boolean) => {
   const items = [
-    { title: "Perfil", url: "/profile", icon: User },
     { title: "Configurações", url: "/settings", icon: Settings },
     { title: "Reportar Bug", url: "/bug-report", icon: Bug },
   ];
