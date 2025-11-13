@@ -18,6 +18,7 @@ interface ActivityLog {
   profiles?: {
     email: string;
     full_name: string | null;
+    points: number;
   };
 }
 
@@ -40,7 +41,8 @@ export function ActivityLogs() {
           *,
           profiles:user_id (
             email,
-            full_name
+            full_name,
+            points
           )
         `)
         .order("timestamp", { ascending: false })
@@ -134,7 +136,7 @@ export function ActivityLogs() {
                 <TableHead>Data/Hora</TableHead>
                 <TableHead>Usuário</TableHead>
                 <TableHead>Ação</TableHead>
-                <TableHead>Detalhes</TableHead>
+                <TableHead>Pontuação</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -163,12 +165,17 @@ export function ActivityLogs() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-primary/10 text-primary">
+                      <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
                         {log.action}
                       </span>
                     </TableCell>
-                    <TableCell className="max-w-md truncate">
-                      {JSON.stringify(log.details)}
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold text-primary">
+                          {log.profiles?.points || 0}
+                        </span>
+                        <span className="text-sm text-muted-foreground">pontos</span>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

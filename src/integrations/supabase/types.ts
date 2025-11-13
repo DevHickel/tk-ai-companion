@@ -185,18 +185,21 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          points: number
           role: Database["public"]["Enums"]["user_role"]
         }
         Insert: {
           email?: string | null
           full_name?: string | null
           id: string
+          points?: number
           role?: Database["public"]["Enums"]["user_role"]
         }
         Update: {
           email?: string | null
           full_name?: string | null
           id?: string
+          points?: number
           role?: Database["public"]["Enums"]["user_role"]
         }
         Relationships: []
@@ -246,6 +249,10 @@ export type Database = {
           metadata: Json
           score: number
         }[]
+      }
+      increment_user_points: {
+        Args: { p_points?: number; p_user_id: string }
+        Returns: undefined
       }
       insert_document_chunk: {
         Args: {

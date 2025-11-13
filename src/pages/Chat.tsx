@@ -148,6 +148,8 @@ export default function Chat() {
   };
 
   const saveMessageToConversation = async (conversationId: string, role: "user" | "assistant", content: string) => {
+    if (!user) return;
+    
     try {
       const { data, error } = await supabase
         .from('messages')
@@ -160,6 +162,22 @@ export default function Chat() {
         .single();
 
       if (error) throw error;
+      
+      // Increment user points when they send a message
+      if (role === "user") {
+        await supabase.rpc('increment_user_points', { 
+          p_user_id: user.id, 
+          p_points: 1 
+        });
+        
+        // Log the activity
+        await supabase.from('activity_logs').insert({
+          user_id: user.id,
+          action: 'message_sent',
+          details: { conversation_id: conversationId }
+        });
+      }
+      
       return data;
     } catch (error) {
       console.error('Error saving message:', error);
@@ -189,7 +207,7 @@ export default function Chat() {
   }, [user]);
 
   const saveMessage = async (role: "user" | "assistant", content: string) => {
-    if (!currentConversationId) return;
+    if (!currentConversationId || !user) return;
 
     try {
       const { data, error } = await supabase
@@ -203,6 +221,22 @@ export default function Chat() {
         .single();
 
       if (error) throw error;
+      
+      // Increment user points when they send a message
+      if (role === "user") {
+        await supabase.rpc('increment_user_points', { 
+          p_user_id: user.id, 
+          p_points: 1 
+        });
+        
+        // Log the activity
+        await supabase.from('activity_logs').insert({
+          user_id: user.id,
+          action: 'message_sent',
+          details: { conversation_id: currentConversationId }
+        });
+      }
+      
       return data;
     } catch (error) {
       console.error('Error saving message:', error);
