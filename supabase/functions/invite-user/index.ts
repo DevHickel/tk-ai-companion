@@ -78,8 +78,14 @@ serve(async (req) => {
       }
     );
 
+    // Get the origin from the request headers
+    const origin = req.headers.get('origin') || req.headers.get('referer')?.split('/').slice(0, 3).join('/') || '';
+    const redirectUrl = `${origin}/update-password`;
+
     // Invite the user
-    const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email);
+    const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+      redirectTo: redirectUrl
+    });
 
     if (error) {
       console.error('Invite error:', error);

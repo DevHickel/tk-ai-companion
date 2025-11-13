@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Admin from "./pages/Admin";
 import BugReport from "./pages/BugReport";
+import UpdatePassword from "./pages/UpdatePassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -105,6 +106,14 @@ function AppRoutes() {
             <AppLayout>
               <BugReport />
             </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/update-password"
+        element={
+          <ProtectedRoute>
+            <UpdatePassword />
           </ProtectedRoute>
         }
       />
