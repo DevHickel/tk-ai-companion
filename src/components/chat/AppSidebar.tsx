@@ -212,13 +212,13 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild>
                         <NavLink 
                           to={`/chat?id=${conv.id}`} 
-                          className={`hover:bg-sidebar-accent group relative ${!open ? "justify-center" : ""}`}
+                          className={`hover:bg-sidebar-accent group relative flex items-center gap-2 ${!open ? "justify-center" : ""}`}
                         >
                           <MessageSquare className="h-4 w-4 flex-shrink-0" />
                           {open && (
                             <>
-                              <span className="flex-1 truncate">{conv.title}</span>
-                              <div className={`flex items-center gap-1 transition-opacity ${conv.pinned ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                              <span className="flex-1 min-w-0 truncate">{conv.title}</span>
+                              <div className={`flex items-center gap-1 flex-shrink-0 transition-opacity ${conv.pinned ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                                 <button
                                   onClick={(e) => togglePinConversation(conv.id, conv.pinned, e)}
                                   className={`p-1 rounded transition-colors ${
