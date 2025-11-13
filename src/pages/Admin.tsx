@@ -42,7 +42,7 @@ export default function Admin() {
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="logs">Logs de Atividade</TabsTrigger>
           <TabsTrigger value="users">Gerenciar Usuários</TabsTrigger>
-          <TabsTrigger value="whitelabel">Whitelabel</TabsTrigger>
+          <TabsTrigger value="whitelabel">Design Plataforma</TabsTrigger>
         </TabsList>
 
         <TabsContent value="logs" className="mt-6">
