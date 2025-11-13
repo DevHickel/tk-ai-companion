@@ -30,6 +30,7 @@ export default function Settings() {
               id="theme-toggle"
               checked={theme === "dark"}
               onCheckedChange={toggleTheme}
+              className="data-[state=checked]:bg-gray-600"
             />
           </div>
         </CardContent>
@@ -48,7 +49,7 @@ export default function Settings() {
                 Receber atualizações por email
               </p>
             </div>
-            <Switch />
+            <Switch className="data-[state=checked]:bg-gray-600" />
           </div>
         </CardContent>
       </Card>

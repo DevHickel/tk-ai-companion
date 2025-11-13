@@ -196,6 +196,7 @@ export function UserManagement() {
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleInviteUser()}
+              className="border-gray-600 focus-visible:ring-gray-500"
             />
           </div>
           <div className="flex items-end">
@@ -257,6 +258,7 @@ export function UserManagement() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleToggleAdmin(user.id, isAdmin)}
+                          className="border-gray-600 hover:bg-gray-700"
                         >
                           {isAdmin ? (
                             <>
@@ -272,7 +274,7 @@ export function UserManagement() {
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm">
+                            <Button variant="outline" size="sm" className="border-gray-600 hover:bg-gray-700 text-gray-300">
                               <Trash2 className="h-4 w-4 mr-1" />
                               Remover
                             </Button>

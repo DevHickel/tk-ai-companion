@@ -242,7 +242,7 @@ export function WhitelabelSettings() {
                 onChange={(e) =>
                   setSettings({ ...settings, primary_color: e.target.value })
                 }
-                className="w-20 h-10"
+                className="w-20 h-10 border-gray-600 focus-visible:ring-gray-500"
               />
               <Input
                 type="text"
@@ -251,6 +251,7 @@ export function WhitelabelSettings() {
                   setSettings({ ...settings, primary_color: e.target.value })
                 }
                 placeholder="#0ea5e9"
+                className="border-gray-600 focus-visible:ring-gray-500"
               />
             </div>
           </div>
@@ -265,7 +266,7 @@ export function WhitelabelSettings() {
                 onChange={(e) =>
                   setSettings({ ...settings, secondary_color: e.target.value })
                 }
-                className="w-20 h-10"
+                className="w-20 h-10 border-gray-600 focus-visible:ring-gray-500"
               />
               <Input
                 type="text"
@@ -274,6 +275,7 @@ export function WhitelabelSettings() {
                   setSettings({ ...settings, secondary_color: e.target.value })
                 }
                 placeholder="#8b5cf6"
+                className="border-gray-600 focus-visible:ring-gray-500"
               />
             </div>
           </div>
@@ -288,7 +290,7 @@ export function WhitelabelSettings() {
                 onChange={(e) =>
                   setSettings({ ...settings, button_color: e.target.value })
                 }
-                className="w-20 h-10"
+                className="w-20 h-10 border-gray-600 focus-visible:ring-gray-500"
               />
               <Input
                 type="text"
@@ -297,6 +299,7 @@ export function WhitelabelSettings() {
                   setSettings({ ...settings, button_color: e.target.value })
                 }
                 placeholder="#0ea5e9"
+                className="border-gray-600 focus-visible:ring-gray-500"
               />
             </div>
           </div>
@@ -309,7 +312,7 @@ export function WhitelabelSettings() {
                 setSettings({ ...settings, font_family: value })
               }
             >
-              <SelectTrigger id="font-family">
+              <SelectTrigger id="font-family" className="border-gray-600 focus:ring-gray-500">
                 <SelectValue placeholder="Selecione uma fonte" />
               </SelectTrigger>
               <SelectContent>
@@ -339,7 +342,7 @@ export function WhitelabelSettings() {
                   accept="image/*"
                   onChange={handleLogoUpload}
                   disabled={uploading}
-                  className="cursor-pointer"
+                  className="cursor-pointer border-gray-600 focus-visible:ring-gray-500"
                 />
               </div>
               {uploading && <Loader2 className="h-4 w-4 animate-spin" />}

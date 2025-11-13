@@ -99,7 +99,7 @@ export default function BugReport() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Descreva o bug que você encontrou..."
-                  className="min-h-[150px]"
+                  className="min-h-[150px] border-gray-600 focus-visible:ring-gray-500"
                   required
                 />
               </div>
@@ -115,7 +115,7 @@ export default function BugReport() {
                     className="hidden"
                   />
                   <Label htmlFor="screenshot" className="cursor-pointer flex-1">
-                    <Button type="button" variant="outline" className="w-full" asChild>
+                    <Button type="button" variant="outline" className="w-full border-gray-600 hover:bg-gray-700" asChild>
                       <span>
                         <Upload className="h-4 w-4 mr-2" />
                         {screenshot ? screenshot.name : "Enviar Captura de Tela"}
@@ -125,7 +125,7 @@ export default function BugReport() {
                 </div>
               </div>
 
-              <Button type="submit" disabled={loading} className="w-full">
+              <Button type="submit" disabled={loading} className="w-full bg-gray-600 hover:bg-gray-700 text-white">
                 {loading ? "Enviando..." : "Enviar Relatório de Bug"}
               </Button>
             </form>

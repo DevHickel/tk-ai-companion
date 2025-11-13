@@ -98,13 +98,14 @@ export function ActivityLogs() {
               placeholder="Buscar por usuário ou ação..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              className="border-gray-600 focus-visible:ring-gray-500"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="action">Ação</Label>
             <Select value={actionFilter} onValueChange={setActionFilter}>
-              <SelectTrigger id="action">
+              <SelectTrigger id="action" className="border-gray-600 focus:ring-gray-500">
                 <SelectValue placeholder="Todas as ações" />
               </SelectTrigger>
               <SelectContent>
@@ -125,6 +126,7 @@ export function ActivityLogs() {
               type="date"
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
+              className="border-gray-600 focus-visible:ring-gray-500"
             />
           </div>
         </div>
