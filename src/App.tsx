@@ -141,14 +141,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/update-password"
-        element={
-          <ProtectedRoute>
-            <UpdatePassword />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/update-password" element={<UpdatePassword />} />
       <Route path="/" element={<Navigate to={user ? "/chat" : "/auth"} replace />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
