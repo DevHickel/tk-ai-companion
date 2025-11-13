@@ -1,4 +1,14 @@
 import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield, Trash2, Pin, Edit3 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
@@ -54,6 +64,9 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [newTitle, setNewTitle] = useState("");
   
   const footerItems = getFooterItems(isAdmin);
 
@@ -128,16 +141,24 @@ export function AppSidebar() {
       .eq('id', id);
   };
 
-  const renameConversation = async (id: string, e: React.MouseEvent) => {
+  const openRenameDialog = (conv: Conversation, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    setSelectedConversation(conv);
+    setNewTitle(conv.title);
+    setRenameDialogOpen(true);
+  };
 
-    const newTitle = prompt('Digite o novo nome para a conversa:');
-    if (newTitle && newTitle.trim()) {
+  const handleRename = async () => {
+    if (selectedConversation && newTitle.trim()) {
       await supabase
         .from('conversations')
         .update({ title: newTitle.trim() })
-        .eq('id', id);
+        .eq('id', selectedConversation.id);
+      
+      setRenameDialogOpen(false);
+      setSelectedConversation(null);
+      setNewTitle("");
     }
   };
 
@@ -196,24 +217,28 @@ export function AppSidebar() {
                           >
                             <MessageSquare className="h-4 w-4 flex-shrink-0" />
                             <span className="flex-1 truncate">{conv.title}</span>
-                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+                            <div className={`flex items-center gap-1 transition-opacity ${conv.pinned ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                               <button
                                 onClick={(e) => togglePinConversation(conv.id, conv.pinned, e)}
-                                className={`hover:text-primary ${conv.pinned ? 'opacity-100 text-primary' : ''}`}
+                                className={`p-1 rounded transition-colors ${
+                                  conv.pinned 
+                                    ? 'text-primary hover:bg-primary/10' 
+                                    : 'hover:text-primary hover:bg-accent'
+                                }`}
                                 title={conv.pinned ? "Desafixar" : "Fixar"}
                               >
                                 <Pin className={`h-3 w-3 ${conv.pinned ? 'fill-current' : ''}`} />
                               </button>
                               <button
-                                onClick={(e) => renameConversation(conv.id, e)}
-                                className="hover:text-primary"
+                                onClick={(e) => openRenameDialog(conv, e)}
+                                className="p-1 rounded transition-colors hover:text-primary hover:bg-accent"
                                 title="Renomear"
                               >
                                 <Edit3 className="h-3 w-3" />
                               </button>
                               <button
                                 onClick={(e) => deleteConversation(conv.id, e)}
-                                className="hover:text-destructive"
+                                className="p-1 rounded transition-colors hover:text-destructive hover:bg-destructive/10"
                                 title="Excluir"
                               >
                                 <Trash2 className="h-3 w-3" />
@@ -267,6 +292,41 @@ export function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
+
+      <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Renomear Conversa</DialogTitle>
+            <DialogDescription>
+              Digite o novo nome para a conversa.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Nome da Conversa</Label>
+              <Input
+                id="title"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder="Digite o nome..."
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleRename();
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRenameDialogOpen(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={handleRename}>
+              Renomear
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Sidebar>
   );
 }
