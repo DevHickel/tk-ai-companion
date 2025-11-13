@@ -20,6 +20,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 const navigationItems = [
   { title: "Novo Chat", url: "/chat", icon: Plus },
+];
+
+const footerItems = [
   { title: "Perfil", url: "/profile", icon: User },
   { title: "Configurações", url: "/settings", icon: Settings },
   { title: "Reportar Bug", url: "/bug-report", icon: Bug },
@@ -48,11 +51,15 @@ export function AppSidebar() {
             <SidebarMenu>
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className="hover:bg-sidebar-accent" activeClassName="bg-sidebar-accent">
-                      <item.icon className="h-4 w-4" />
-                      {open && <span>{item.title}</span>}
-                    </NavLink>
+                  <SidebarMenuButton 
+                    onClick={() => {
+                      if (item.title === "Novo Chat") {
+                        window.dispatchEvent(new Event('newChat'));
+                      }
+                    }}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {open && <span>{item.title}</span>}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -79,25 +86,31 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t space-y-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={toggleTheme}
-          className={`w-full ${!open ? "px-2" : "justify-start"}`}
-        >
-          {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-          {open && <span className="ml-2">{theme === "light" ? "Modo Escuro" : "Modo Claro"}</span>}
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={signOut}
-          className={`w-full ${!open ? "px-2" : "justify-start"}`}
-        >
-          <LogOut className="h-4 w-4" />
-          {open && <span className="ml-2">Sair</span>}
-        </Button>
+      <SidebarFooter className="p-4 border-t">
+        <SidebarMenu>
+          {footerItems.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild>
+                <NavLink to={item.url} className="hover:bg-sidebar-accent" activeClassName="bg-sidebar-accent">
+                  <item.icon className="h-4 w-4" />
+                  {open && <span>{item.title}</span>}
+                </NavLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={toggleTheme}>
+              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              {open && <span>{theme === "light" ? "Modo Escuro" : "Modo Claro"}</span>}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={signOut}>
+              <LogOut className="h-4 w-4" />
+              {open && <span>Sair</span>}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );

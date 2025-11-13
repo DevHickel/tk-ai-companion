@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChatMessage } from "@/components/chat/ChatMessage";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,6 +14,17 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // Listen for new chat event
+  useEffect(() => {
+    const handleNewChat = () => {
+      setMessages([]);
+    };
+
+    window.addEventListener('newChat', handleNewChat);
+    return () => window.removeEventListener('newChat', handleNewChat);
+  }, []);
 
   const handleSend = async (content: string) => {
     const userMessage: Message = { role: "user", content };
@@ -58,9 +70,9 @@ export default function Chat() {
                 <div className="h-20 w-20 rounded-2xl bg-gradient-primary flex items-center justify-center text-white font-bold text-3xl mb-6">
                   T
                 </div>
-                <h1 className="text-3xl font-bold mb-2">Bem-vindo ao TkSolution</h1>
+                <h1 className="text-3xl font-bold mb-2">Bem-vindo à Plataforma TK Solution</h1>
                 <p className="text-muted-foreground max-w-md">
-                  Seu Assistente de Engenharia AI está pronto para ajudar. Me pergunte qualquer coisa sobre engenharia, programação ou problemas técnicos!
+                  Faça perguntas sobre procedimentos e receba respostas detalhadas instantaneamente.
                 </p>
               </div>
             ) : (
