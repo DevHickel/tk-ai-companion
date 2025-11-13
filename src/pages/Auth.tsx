@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { Sun, Moon } from "lucide-react";
 
 export default function Auth() {
   const [email, setEmail] = useState("");
@@ -14,6 +16,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { settings } = useThemeSettings();
+  const { theme, toggleTheme } = useTheme();
   const { toast } = useToast();
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -21,12 +24,32 @@ export default function Auth() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
+
+      // Sync theme preference with database
+      if (data.user) {
+        const localTheme = localStorage.getItem("theme") || "light";
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("theme_preference")
+          .eq("id", data.user.id)
+          .single();
+
+        if (profile) {
+          // If database theme differs from local, update database
+          if (profile.theme_preference !== localTheme) {
+            await supabase
+              .from("profiles")
+              .update({ theme_preference: localTheme })
+              .eq("id", data.user.id);
+          }
+        }
+      }
 
       navigate("/chat");
     } catch (error: any) {
@@ -41,7 +64,22 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center gradient-subtle p-4">
+    <div className="min-h-screen flex items-center justify-center gradient-subtle p-4 relative">
+      {/* Theme Toggle */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleTheme}
+        className="absolute top-4 right-4"
+        aria-label="Toggle theme"
+      >
+        {theme === "dark" ? (
+          <Sun className="h-5 w-5" />
+        ) : (
+          <Moon className="h-5 w-5" />
+        )}
+      </Button>
+
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
@@ -49,10 +87,10 @@ export default function Auth() {
               <img 
                 src={settings.logo_url} 
                 alt="Logo" 
-                className="h-16 w-16 object-contain"
+                className="h-16 object-contain max-w-[200px]"
               />
             ) : (
-              <div className="h-12 w-12 rounded-lg bg-gradient-primary flex items-center justify-center text-white font-bold text-xl">
+              <div className="h-16 w-16 rounded-lg bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-2xl">
                 T
               </div>
             )}

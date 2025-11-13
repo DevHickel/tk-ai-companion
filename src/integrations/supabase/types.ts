@@ -188,6 +188,7 @@ export type Database = {
           id: string
           points: number
           role: Database["public"]["Enums"]["user_role"]
+          theme_preference: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -196,6 +197,7 @@ export type Database = {
           id: string
           points?: number
           role?: Database["public"]["Enums"]["user_role"]
+          theme_preference?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -204,6 +206,7 @@ export type Database = {
           id?: string
           points?: number
           role?: Database["public"]["Enums"]["user_role"]
+          theme_preference?: string | null
         }
         Relationships: []
       }
