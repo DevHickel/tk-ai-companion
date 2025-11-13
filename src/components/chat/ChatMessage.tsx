@@ -20,14 +20,14 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
   return (
     <div className={`flex gap-4 p-6 rounded-xl mb-4 ${
       isUser 
-        ? "ml-auto max-w-[80%] bg-primary text-primary-foreground flex-row-reverse" 
-        : "mr-auto max-w-[80%] bg-muted"
+        ? "ml-auto max-w-[80%] bg-chat-user text-white flex-row-reverse" 
+        : "mr-auto max-w-[80%] bg-chat-ai"
     }`}>
       <div className="flex-shrink-0">
         {isUser ? (
           <Avatar className="h-10 w-10">
             <AvatarImage src="" />
-            <AvatarFallback className="bg-primary-foreground text-primary">
+            <AvatarFallback className="bg-white text-primary">
               {user?.email ? getInitials(user.email) : "U"}
             </AvatarFallback>
           </Avatar>
@@ -39,7 +39,7 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
       </div>
       <div className="flex-1 space-y-2 overflow-hidden">
         {!isUser && <p className="text-sm font-semibold text-foreground">TKzinho</p>}
-        <div className={`prose prose-sm max-w-none ${isUser ? "text-primary-foreground prose-invert" : "text-foreground"}`}>
+        <div className={`prose prose-sm max-w-none ${isUser ? "text-white prose-invert" : "text-foreground"}`}>
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
         </div>
       </div>
