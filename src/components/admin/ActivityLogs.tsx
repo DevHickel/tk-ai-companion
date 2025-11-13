@@ -22,6 +22,33 @@ interface ActivityLog {
   };
 }
 
+// Helper function to translate action codes to Portuguese labels
+const translateAction = (action: string): string => {
+  const actionMap: Record<string, string> = {
+    'message_sent': 'Mensagem Enviada',
+    'settings_updated': 'Configuração Atualizada',
+    'user_invited': 'Novo Usuário Convidado',
+    'user_deleted': 'Usuário Removido',
+    'user_login': 'Login Efetuado',
+    'login': 'Login Efetuado',
+    'bug_reported': 'Bug Reportado',
+    'profile_updated': 'Perfil Editado',
+    'password_changed': 'Senha Alterada',
+  };
+
+  // Return mapped value if exists, otherwise format the raw action
+  if (actionMap[action]) {
+    return actionMap[action];
+  }
+
+  // Fallback: replace underscores with spaces and capitalize first letter
+  return action
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
+
 export function ActivityLogs() {
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -168,7 +195,7 @@ export function ActivityLogs() {
                     </TableCell>
                     <TableCell>
                       <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                        {log.action}
+                        {translateAction(log.action)}
                       </span>
                     </TableCell>
                     <TableCell>
