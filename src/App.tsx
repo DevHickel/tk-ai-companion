@@ -12,6 +12,7 @@ import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
+import { UserProfileProvider, useUserProfile } from "@/contexts/UserProfileContext";
 import Auth from "./pages/Auth";
 import Chat from "./pages/Chat";
 import Profile from "./pages/Profile";
@@ -44,6 +45,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function AppLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { profile } = useUserProfile();
 
   const getInitials = (email: string) => {
     return email.substring(0, 2).toUpperCase();
@@ -61,7 +63,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="" />
+                    <AvatarImage src={profile?.avatar_url || ""} />
                     <AvatarFallback className="bg-primary text-primary-foreground">
                       {user?.email ? getInitials(user.email) : "U"}
                     </AvatarFallback>
@@ -159,11 +161,13 @@ const App = () => (
       <ThemeProvider>
         <ThemeSettingsProvider>
           <AuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <AppRoutes />
-            </TooltipProvider>
+            <UserProfileProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <AppRoutes />
+              </TooltipProvider>
+            </UserProfileProvider>
           </AuthProvider>
         </ThemeSettingsProvider>
       </ThemeProvider>

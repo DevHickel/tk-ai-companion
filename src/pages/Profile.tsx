@@ -26,13 +26,14 @@ export default function Profile() {
     try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("full_name")
+        .select("full_name, avatar_url")
         .eq("id", user!.id)
         .single();
 
       if (error) throw error;
       if (data) {
         setFullName(data.full_name || "");
+        setAvatarUrl(data.avatar_url || "");
       }
     } catch (error: any) {
       console.error("Erro ao carregar perfil:", error);
@@ -85,7 +86,17 @@ export default function Profile() {
         .from("avatars")
         .getPublicUrl(filePath);
 
-      setAvatarUrl(data.publicUrl);
+      const publicUrl = data.publicUrl;
+
+      // Update avatar_url in profiles table
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: publicUrl })
+        .eq("id", user!.id);
+
+      if (updateError) throw updateError;
+
+      setAvatarUrl(publicUrl);
       toast({
         title: "Sucesso!",
         description: "Avatar enviado com sucesso.",

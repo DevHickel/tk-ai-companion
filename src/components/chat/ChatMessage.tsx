@@ -3,6 +3,7 @@ import remarkGfm from "remark-gfm";
 import { Bot } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserProfile } from "@/contexts/UserProfileContext";
 
 interface ChatMessageProps {
   role: "user" | "assistant";
@@ -12,6 +13,7 @@ interface ChatMessageProps {
 export function ChatMessage({ role, content }: ChatMessageProps) {
   const isUser = role === "user";
   const { user } = useAuth();
+  const { profile } = useUserProfile();
 
   const getInitials = (email: string) => {
     return email.substring(0, 2).toUpperCase();
@@ -26,7 +28,7 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
       <div className="flex-shrink-0">
         {isUser ? (
           <Avatar className="h-10 w-10">
-            <AvatarImage src="" />
+            <AvatarImage src={profile?.avatar_url || ""} />
             <AvatarFallback className="bg-white text-primary">
               {user?.email ? getInitials(user.email) : "U"}
             </AvatarFallback>

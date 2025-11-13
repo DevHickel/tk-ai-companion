@@ -182,6 +182,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           email: string | null
           full_name: string | null
           id: string
@@ -189,6 +190,7 @@ export type Database = {
           role: Database["public"]["Enums"]["user_role"]
         }
         Insert: {
+          avatar_url?: string | null
           email?: string | null
           full_name?: string | null
           id: string
@@ -196,6 +198,7 @@ export type Database = {
           role?: Database["public"]["Enums"]["user_role"]
         }
         Update: {
+          avatar_url?: string | null
           email?: string | null
           full_name?: string | null
           id?: string

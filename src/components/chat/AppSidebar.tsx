@@ -9,12 +9,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield, Trash2, Pin, Edit3 } from "lucide-react";
+import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield, Trash2, Pin, Edit3, Command } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAdmin } from "@/hooks/useAdmin";
 import { supabase } from "@/integrations/supabase/client";
+import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
+import { useUserProfile } from "@/contexts/UserProfileContext";
 import {
   Sidebar,
   SidebarContent,
@@ -67,6 +69,8 @@ export function AppSidebar() {
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newTitle, setNewTitle] = useState("");
+  const { settings } = useThemeSettings();
+  const { profile } = useUserProfile();
   
   const footerItems = getFooterItems(isAdmin);
 
@@ -166,9 +170,17 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className={`p-4 border-b ${!open ? "p-2" : ""}`}>
         <div className={`flex items-center gap-2 ${!open ? "justify-center" : ""}`}>
-          <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center text-white font-bold flex-shrink-0">
-            T
-          </div>
+          {settings.logo_url ? (
+            <img 
+              src={settings.logo_url} 
+              alt="Logo" 
+              className="h-8 w-8 object-contain rounded-lg flex-shrink-0"
+            />
+          ) : (
+            <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center text-white font-bold flex-shrink-0">
+              T
+            </div>
+          )}
           {open && <span className="font-bold text-lg">TkSolution</span>}
         </div>
       </SidebarHeader>
