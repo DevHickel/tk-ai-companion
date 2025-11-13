@@ -106,33 +106,16 @@ export default function Chat() {
     }
   };
 
-  const createNewConversation = async () => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('conversations')
-        .insert({ user_id: user.id, title: 'Nova Conversa' })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setCurrentConversationId(data.id);
-      setMessages([]);
-      navigate(`/chat?id=${data.id}`, { replace: true });
-    } catch (error) {
-      console.error('Error creating conversation:', error);
-    }
-  };
-
-  const createNewConversationAndReturn = async () => {
+  const createNewConversationAndReturn = async (firstMessage: string) => {
     if (!user) return null;
 
     try {
+      // Use first 30 characters of message as title
+      const title = firstMessage.slice(0, 30) + (firstMessage.length > 30 ? '...' : '');
+      
       const { data, error } = await supabase
         .from('conversations')
-        .insert({ user_id: user.id, title: 'Nova Conversa' })
+        .insert({ user_id: user.id, title })
         .select()
         .single();
 
@@ -147,7 +130,7 @@ export default function Chat() {
     }
   };
 
-  const saveMessageToConversation = async (conversationId: string, role: "user" | "assistant", content: string) => {
+  const saveMessage = async (conversationId: string, role: "user" | "assistant", content: string) => {
     if (!user) return;
     
     try {
@@ -184,94 +167,19 @@ export default function Chat() {
     }
   };
 
-  const updateConversationTitleById = async (conversationId: string, firstMessage: string) => {
-    try {
-      const title = firstMessage.slice(0, 50) + (firstMessage.length > 50 ? '...' : '');
-      await supabase
-        .from('conversations')
-        .update({ title })
-        .eq('id', conversationId);
-    } catch (error) {
-      console.error('Error updating conversation title:', error);
-    }
-  };
-
-  // Handle creating new conversation when navigating to /chat without ID
-  useEffect(() => {
-    if (!user) return;
-    
-    const conversationId = searchParams.get('id');
-    if (!conversationId && messages.length === 0 && !currentConversationId) {
-      // Only show welcome screen, don't auto-create
-      setMessages([]);
-      setCurrentConversationId(null);
-    }
-  }, [user, searchParams, messages.length, currentConversationId]);
-
-  const saveMessage = async (role: "user" | "assistant", content: string) => {
-    if (!currentConversationId || !user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('messages')
-        .insert({
-          conversation_id: currentConversationId,
-          role,
-          content
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-      
-      // Increment user points when they send a message
-      if (role === "user") {
-        await supabase.rpc('increment_user_points', { 
-          p_user_id: user.id, 
-          p_points: 1 
-        });
-        
-        // Log the activity
-        await supabase.from('activity_logs').insert({
-          user_id: user.id,
-          action: 'message_sent',
-          details: { conversation_id: currentConversationId }
-        });
-      }
-      
-      return data;
-    } catch (error) {
-      console.error('Error saving message:', error);
-    }
-  };
-
-  const updateConversationTitle = async (firstMessage: string) => {
-    if (!currentConversationId) return;
-
-    try {
-      const title = firstMessage.slice(0, 50) + (firstMessage.length > 50 ? '...' : '');
-      await supabase
-        .from('conversations')
-        .update({ title })
-        .eq('id', currentConversationId);
-    } catch (error) {
-      console.error('Error updating conversation title:', error);
-    }
-  };
-
   const handleSend = async (content: string) => {
     // Create new conversation if none exists
     if (!currentConversationId) {
-      const newConv = await createNewConversationAndReturn();
+      const newConv = await createNewConversationAndReturn(content);
       if (!newConv) return;
       
-      // Continue with sending message using the new conversation
+      // Add user message to UI immediately
       const userMessage: Message = { role: "user", content };
       setMessages([userMessage]);
       setLoading(true);
 
-      await saveMessageToConversation(newConv.id, "user", content);
-      await updateConversationTitleById(newConv.id, content);
+      // Save user message to database
+      await saveMessage(newConv.id, "user", content);
 
       try {
         const response = await fetch("https://n8n.vetorix.com.br/webhook/TkSolution", {
@@ -294,7 +202,7 @@ export default function Chat() {
         };
         
         setMessages([userMessage, aiMessage]);
-        await saveMessageToConversation(newConv.id, "assistant", aiMessage.content);
+        await saveMessage(newConv.id, "assistant", aiMessage.content);
       } catch (error: any) {
         toast({
           title: "Erro",
@@ -307,17 +215,13 @@ export default function Chat() {
       return;
     }
 
+    // For existing conversations
     const userMessage: Message = { role: "user", content };
     setMessages((prev) => [...prev, userMessage]);
     setLoading(true);
 
     // Save user message
-    await saveMessage("user", content);
-
-    // Update conversation title if it's the first message
-    if (messages.length === 0) {
-      await updateConversationTitle(content);
-    }
+    await saveMessage(currentConversationId, "user", content);
 
     try {
       const response = await fetch("https://n8n.vetorix.com.br/webhook/TkSolution", {
@@ -337,12 +241,12 @@ export default function Chat() {
       const aiMessage: Message = { 
         role: "assistant", 
         content: data.output || data.response || data.message || "Recebi sua mensagem!" 
-      };
+        };
       
       setMessages((prev) => [...prev, aiMessage]);
       
       // Save assistant message
-      await saveMessage("assistant", aiMessage.content);
+      await saveMessage(currentConversationId, "assistant", aiMessage.content);
     } catch (error: any) {
       toast({
         title: "Erro",
