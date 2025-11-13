@@ -9,6 +9,8 @@ import { Loader2, Upload } from "lucide-react";
 
 interface AppSettings {
   primary_color: string;
+  secondary_color?: string;
+  button_color?: string;
   font_family: string;
   logo_url: string | null;
 }
@@ -16,6 +18,8 @@ interface AppSettings {
 export function WhitelabelSettings() {
   const [settings, setSettings] = useState<AppSettings>({
     primary_color: "#0ea5e9",
+    secondary_color: "#8b5cf6",
+    button_color: "#0ea5e9",
     font_family: "Inter",
     logo_url: null,
   });
@@ -40,6 +44,8 @@ export function WhitelabelSettings() {
       if (data) {
         setSettings({
           primary_color: data.primary_color || "#0ea5e9",
+          secondary_color: (data as any).secondary_color || "#8b5cf6",
+          button_color: (data as any).button_color || "#0ea5e9",
           font_family: data.font_family || "Inter",
           logo_url: data.logo_url,
         });
@@ -58,9 +64,11 @@ export function WhitelabelSettings() {
         .from("app_settings")
         .update({
           primary_color: settings.primary_color,
+          secondary_color: settings.secondary_color,
+          button_color: settings.button_color,
           font_family: settings.font_family,
           logo_url: settings.logo_url,
-        })
+        } as any)
         .eq("id", 1);
 
       if (error) throw error;
@@ -70,6 +78,20 @@ export function WhitelabelSettings() {
         "--primary",
         hexToHSL(settings.primary_color)
       );
+      
+      if (settings.secondary_color) {
+        document.documentElement.style.setProperty(
+          "--secondary",
+          hexToHSL(settings.secondary_color)
+        );
+      }
+      
+      if (settings.button_color) {
+        document.documentElement.style.setProperty(
+          "--button",
+          hexToHSL(settings.button_color)
+        );
+      }
 
       toast({
         title: "Sucesso",
@@ -170,7 +192,7 @@ export function WhitelabelSettings() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Personalização da Plataforma</CardTitle>
+        <CardTitle>Design Plataforma</CardTitle>
         <CardDescription>
           Customize as cores e aparência da plataforma
         </CardDescription>
@@ -194,6 +216,52 @@ export function WhitelabelSettings() {
                 value={settings.primary_color}
                 onChange={(e) =>
                   setSettings({ ...settings, primary_color: e.target.value })
+                }
+                placeholder="#0ea5e9"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="secondary-color">Cor Secundária</Label>
+            <div className="flex gap-4">
+              <Input
+                id="secondary-color"
+                type="color"
+                value={settings.secondary_color}
+                onChange={(e) =>
+                  setSettings({ ...settings, secondary_color: e.target.value })
+                }
+                className="w-20 h-10"
+              />
+              <Input
+                type="text"
+                value={settings.secondary_color}
+                onChange={(e) =>
+                  setSettings({ ...settings, secondary_color: e.target.value })
+                }
+                placeholder="#8b5cf6"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="button-color">Cor de Botão</Label>
+            <div className="flex gap-4">
+              <Input
+                id="button-color"
+                type="color"
+                value={settings.button_color}
+                onChange={(e) =>
+                  setSettings({ ...settings, button_color: e.target.value })
+                }
+                className="w-20 h-10"
+              />
+              <Input
+                type="text"
+                value={settings.button_color}
+                onChange={(e) =>
+                  setSettings({ ...settings, button_color: e.target.value })
                 }
                 placeholder="#0ea5e9"
               />
