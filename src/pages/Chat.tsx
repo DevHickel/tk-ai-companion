@@ -185,45 +185,43 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-chat-bg">
-      <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full">
-          <div className="max-w-4xl mx-auto p-6">
-            {messages.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center py-20">
-                {settings.logo_url ? (
-                  <img 
-                    src={settings.logo_url} 
-                    alt="Logo" 
-                    className="h-20 w-20 mb-6 object-contain"
-                  />
-                ) : (
-                  <div className="h-20 w-20 rounded-2xl bg-gradient-primary flex items-center justify-center text-white font-bold text-3xl mb-6">
-                    T
-                  </div>
-                )}
-                <h1 className="text-3xl font-bold mb-2">Bem-vindo à Plataforma TK Solution</h1>
-                <p className="text-muted-foreground max-w-md">
-                  Faça perguntas sobre procedimentos e receba respostas detalhadas instantaneamente.
-                </p>
-              </div>
-            ) : (
-              messages.map((message, index) => (
-                <ChatMessage key={index} role={message.role} content={message.content} />
-              ))
-            )}
-            {loading && (
-              <div className="flex gap-4 p-6 bg-chat-ai rounded-xl mb-4">
-                <div className="h-10 w-10 rounded-full bg-accent/20 animate-pulse" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-muted rounded animate-pulse w-20" />
-                  <div className="h-4 bg-muted rounded animate-pulse w-full" />
-                  <div className="h-4 bg-muted rounded animate-pulse w-3/4" />
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto p-6">
+          {messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center text-center py-20">
+              {settings.logo_url ? (
+                <img 
+                  src={settings.logo_url} 
+                  alt="Logo" 
+                  className="h-20 w-20 mb-6 object-contain"
+                />
+              ) : (
+                <div className="h-20 w-20 rounded-2xl bg-gradient-primary flex items-center justify-center text-white font-bold text-3xl mb-6">
+                  T
                 </div>
+              )}
+              <h1 className="text-3xl font-bold mb-2">Bem-vindo à Plataforma TK Solution</h1>
+              <p className="text-muted-foreground max-w-md">
+                Faça perguntas sobre procedimentos e receba respostas detalhadas instantaneamente.
+              </p>
+            </div>
+          ) : (
+            messages.map((message, index) => (
+              <ChatMessage key={index} role={message.role} content={message.content} />
+            ))
+          )}
+          {loading && (
+            <div className="flex gap-4 p-6 bg-chat-ai rounded-xl mb-4">
+              <div className="h-10 w-10 rounded-full bg-accent/20 animate-pulse" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-muted rounded animate-pulse w-20" />
+                <div className="h-4 bg-muted rounded animate-pulse w-full" />
+                <div className="h-4 bg-muted rounded animate-pulse w-3/4" />
               </div>
-            )}
-          </div>
-        </ScrollArea>
+            </div>
+          )}
+        </div>
       </div>
       <ChatInput onSend={handleSend} disabled={loading} />
     </div>
