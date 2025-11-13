@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield, Trash2 } from "lucide-react";
+import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield, Trash2, Pin, Edit3 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -26,6 +26,7 @@ interface Conversation {
   id: string;
   title: string;
   updated_at: string;
+  pinned: boolean;
 }
 
 const navigationItems = [
@@ -92,6 +93,7 @@ export function AppSidebar() {
       .from('conversations')
       .select('*')
       .eq('user_id', user.id)
+      .order('pinned', { ascending: false })
       .order('updated_at', { ascending: false })
       .limit(20);
 
@@ -114,6 +116,29 @@ export function AppSidebar() {
       if (currentId === id) {
         navigate('/chat');
       }
+    }
+  };
+
+  const togglePinConversation = async (id: string, currentPinned: boolean, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    await supabase
+      .from('conversations')
+      .update({ pinned: !currentPinned })
+      .eq('id', id);
+  };
+
+  const renameConversation = async (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const newTitle = prompt('Digite o novo nome para a conversa:');
+    if (newTitle && newTitle.trim()) {
+      await supabase
+        .from('conversations')
+        .update({ title: newTitle.trim() })
+        .eq('id', id);
     }
   };
 
@@ -172,12 +197,29 @@ export function AppSidebar() {
                           >
                             <MessageSquare className="h-4 w-4 flex-shrink-0" />
                             <span className="flex-1 truncate">{conv.title}</span>
-                            <button
-                              onClick={(e) => deleteConversation(conv.id, e)}
-                              className="opacity-0 group-hover:opacity-100 hover:text-destructive"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </button>
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+                              <button
+                                onClick={(e) => togglePinConversation(conv.id, conv.pinned, e)}
+                                className={`hover:text-primary ${conv.pinned ? 'opacity-100 text-primary' : ''}`}
+                                title={conv.pinned ? "Desafixar" : "Fixar"}
+                              >
+                                <Pin className={`h-3 w-3 ${conv.pinned ? 'fill-current' : ''}`} />
+                              </button>
+                              <button
+                                onClick={(e) => renameConversation(conv.id, e)}
+                                className="hover:text-primary"
+                                title="Renomear"
+                              >
+                                <Edit3 className="h-3 w-3" />
+                              </button>
+                              <button
+                                onClick={(e) => deleteConversation(conv.id, e)}
+                                className="hover:text-destructive"
+                                title="Excluir"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
+                            </div>
                           </NavLink>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
