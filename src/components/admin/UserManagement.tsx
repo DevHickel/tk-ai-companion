@@ -196,7 +196,7 @@ export function UserManagement() {
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleInviteUser()}
-              className="border-gray-600 focus-visible:ring-gray-500"
+              className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus-visible:ring-gray-500"
             />
           </div>
           <div className="flex items-end">

@@ -99,7 +99,7 @@ export default function BugReport() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Descreva o bug que você encontrou..."
-                  className="min-h-[150px] border-gray-600 focus-visible:ring-gray-500"
+                  className="min-h-[150px] bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus-visible:ring-gray-500"
                   required
                 />
               </div>
