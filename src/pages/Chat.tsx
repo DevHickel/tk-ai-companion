@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { ChatMessage } from "@/components/chat/ChatMessage";
 import { ChatInput } from "@/components/chat/ChatInput";
@@ -16,6 +17,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { settings } = useThemeSettings();
 
   // Listen for new chat event
@@ -39,7 +41,10 @@ export default function Chat() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: content }),
+        body: JSON.stringify({ 
+          message: content,
+          sessionId: user?.id || `session-${Date.now()}`
+        }),
       });
 
       if (!response.ok) throw new Error("Falha ao obter resposta");
@@ -47,14 +52,14 @@ export default function Chat() {
       const data = await response.json();
       const aiMessage: Message = { 
         role: "assistant", 
-        content: data.response || data.message || "Recebi sua mensagem!" 
+        content: data.output || data.response || data.message || "Recebi sua mensagem!" 
       };
       
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error: any) {
       toast({
         title: "Erro",
-        description: "Falha ao enviar mensagem. Por favor, tente novamente.",
+        description: "Erro ao conectar com a IA",
         variant: "destructive",
       });
     } finally {
