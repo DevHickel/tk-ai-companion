@@ -25,6 +25,7 @@ interface Profile {
   email: string;
   full_name: string | null;
   user_roles?: Array<{ role: string }>;
+  last_sign_in_at?: string | null;
 }
 
 export function UserManagement() {
@@ -48,6 +49,15 @@ export function UserManagement() {
 
       if (profilesError) throw profilesError;
 
+      // Get user metadata from auth.users (last sign in)
+      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
+
+      if (authError) {
+        console.error("Error fetching auth users:", authError);
+      }
+
+      const authUsers = authData?.users || [];
+
       // Then get all user roles
       const { data: rolesData, error: rolesError } = await supabase
         .from("user_roles")
@@ -56,12 +66,16 @@ export function UserManagement() {
       if (rolesError) throw rolesError;
 
       // Combine the data
-      const combinedData = (profilesData || []).map((profile) => ({
-        ...profile,
-        user_roles: (rolesData || [])
-          .filter((role) => role.user_id === profile.id)
-          .map((role) => ({ role: role.role })),
-      }));
+      const combinedData = (profilesData || []).map((profile) => {
+        const authUser = authUsers.find((u) => u.id === profile.id);
+        return {
+          ...profile,
+          last_sign_in_at: authUser?.last_sign_in_at || null,
+          user_roles: (rolesData || [])
+            .filter((role) => role.user_id === profile.id)
+            .map((role) => ({ role: role.role })),
+        };
+      });
 
       setUsers(combinedData);
     } catch (error) {
@@ -117,9 +131,15 @@ export function UserManagement() {
 
   async function handleDeleteUser(userId: string, email: string) {
     try {
-      const { error } = await supabase.auth.admin.deleteUser(userId);
+      const { data, error } = await supabase.functions.invoke('delete-user', {
+        body: { userId }
+      });
 
       if (error) throw error;
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
 
       toast({
         title: "Sucesso",
@@ -127,6 +147,7 @@ export function UserManagement() {
       });
       fetchUsers();
     } catch (error: any) {
+      console.error('Error deleting user:', error);
       toast({
         title: "Erro",
         description: error.message || "Falha ao remover usuário",
@@ -222,6 +243,7 @@ export function UserManagement() {
               <TableRow>
                 <TableHead>Email</TableHead>
                 <TableHead>Nome</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
@@ -229,7 +251,7 @@ export function UserManagement() {
             <TableBody>
               {users.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     Nenhum usuário encontrado
                   </TableCell>
                 </TableRow>
@@ -238,10 +260,23 @@ export function UserManagement() {
                   const isAdmin = user.user_roles?.some(
                     (role) => role.role === "admin"
                   );
+                  const isPending = !user.last_sign_in_at;
+                  
                   return (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">{user.email}</TableCell>
                       <TableCell>{user.full_name || "—"}</TableCell>
+                      <TableCell>
+                        {isPending ? (
+                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
+                            Pendente
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
+                            Ativo
+                          </span>
+                        )}
+                      </TableCell>
                       <TableCell>
                         {isAdmin ? (
                           <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
@@ -283,7 +318,7 @@ export function UserManagement() {
                             <AlertDialogHeader>
                               <AlertDialogTitle>Confirmar Remoção</AlertDialogTitle>
                               <AlertDialogDescription>
-                                Tem certeza que deseja remover o usuário {user.email}?
+                                Tem certeza que deseja remover {isPending ? 'o convite de' : 'o usuário'} {user.email}?
                                 Esta ação não pode ser desfeita.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
