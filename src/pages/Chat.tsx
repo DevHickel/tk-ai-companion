@@ -25,7 +25,7 @@ export default function Chat() {
   const { settings } = useThemeSettings();
   const [searchParams] = useSearchParams();
 
-  // Load conversation from URL or create new one
+  // Load conversation from URL
   useEffect(() => {
     if (!user) return;
 
@@ -33,7 +33,9 @@ export default function Chat() {
     if (conversationId) {
       loadConversation(conversationId);
     } else {
-      createNewConversation();
+      // Reset to empty state when no conversation is selected
+      setMessages([]);
+      setCurrentConversationId(null);
     }
   }, [user, searchParams]);
 
@@ -124,6 +126,58 @@ export default function Chat() {
     }
   };
 
+  const createNewConversationAndReturn = async () => {
+    if (!user) return null;
+
+    try {
+      const { data, error } = await supabase
+        .from('conversations')
+        .insert({ user_id: user.id, title: 'Nova Conversa' })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setCurrentConversationId(data.id);
+      navigate(`/chat?id=${data.id}`, { replace: true });
+      return data;
+    } catch (error) {
+      console.error('Error creating conversation:', error);
+      return null;
+    }
+  };
+
+  const saveMessageToConversation = async (conversationId: string, role: "user" | "assistant", content: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('messages')
+        .insert({
+          conversation_id: conversationId,
+          role,
+          content
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error saving message:', error);
+    }
+  };
+
+  const updateConversationTitleById = async (conversationId: string, firstMessage: string) => {
+    try {
+      const title = firstMessage.slice(0, 50) + (firstMessage.length > 50 ? '...' : '');
+      await supabase
+        .from('conversations')
+        .update({ title })
+        .eq('id', conversationId);
+    } catch (error) {
+      console.error('Error updating conversation title:', error);
+    }
+  };
+
   // Listen for new chat event
   useEffect(() => {
     const handleNewChat = () => {
@@ -170,8 +224,50 @@ export default function Chat() {
   };
 
   const handleSend = async (content: string) => {
+    // Create new conversation if none exists
     if (!currentConversationId) {
-      await createNewConversation();
+      const newConv = await createNewConversationAndReturn();
+      if (!newConv) return;
+      
+      // Continue with sending message using the new conversation
+      const userMessage: Message = { role: "user", content };
+      setMessages([userMessage]);
+      setLoading(true);
+
+      await saveMessageToConversation(newConv.id, "user", content);
+      await updateConversationTitleById(newConv.id, content);
+
+      try {
+        const response = await fetch("https://n8n.vetorix.com.br/webhook/TkSolution", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ 
+            message: content,
+            sessionId: newConv.id
+          }),
+        });
+
+        if (!response.ok) throw new Error("Falha ao obter resposta");
+
+        const data = await response.json();
+        const aiMessage: Message = { 
+          role: "assistant", 
+          content: data.output || data.response || data.message || "Recebi sua mensagem!" 
+        };
+        
+        setMessages([userMessage, aiMessage]);
+        await saveMessageToConversation(newConv.id, "assistant", aiMessage.content);
+      } catch (error: any) {
+        toast({
+          title: "Erro",
+          description: "Erro ao conectar com a IA",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
       return;
     }
 
