@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { ChatMessage } from "@/components/chat/ChatMessage";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,6 +16,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { settings } = useThemeSettings();
 
   // Listen for new chat event
   useEffect(() => {
@@ -67,9 +69,17 @@ export default function Chat() {
           <div className="max-w-4xl mx-auto p-6">
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-20">
-                <div className="h-20 w-20 rounded-2xl bg-gradient-primary flex items-center justify-center text-white font-bold text-3xl mb-6">
-                  T
-                </div>
+                {settings.logo_url ? (
+                  <img 
+                    src={settings.logo_url} 
+                    alt="Logo" 
+                    className="h-20 w-20 mb-6 object-contain"
+                  />
+                ) : (
+                  <div className="h-20 w-20 rounded-2xl bg-gradient-primary flex items-center justify-center text-white font-bold text-3xl mb-6">
+                    T
+                  </div>
+                )}
                 <h1 className="text-3xl font-bold mb-2">Bem-vindo à Plataforma TK Solution</h1>
                 <p className="text-muted-foreground max-w-md">
                   Faça perguntas sobre procedimentos e receba respostas detalhadas instantaneamente.

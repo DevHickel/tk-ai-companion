@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface AppSettings {
   primary_color: string;
@@ -14,6 +15,16 @@ interface AppSettings {
   font_family: string;
   logo_url: string | null;
 }
+
+
+const fontOptions = [
+  { value: "Inter", label: "Inter" },
+  { value: "Roboto", label: "Roboto" },
+  { value: "Open Sans", label: "Open Sans" },
+  { value: "Poppins", label: "Poppins" },
+  { value: "Montserrat", label: "Montserrat" },
+  { value: "Lato", label: "Lato" },
+];
 
 export function WhitelabelSettings() {
   const [settings, setSettings] = useState<AppSettings>({
@@ -93,9 +104,15 @@ export function WhitelabelSettings() {
         );
       }
 
+      // Update font family
+      document.documentElement.style.setProperty(
+        "--font-family",
+        settings.font_family
+      );
+
       toast({
         title: "Sucesso",
-        description: "Configurações atualizadas com sucesso",
+        description: "Configurações atualizadas. Recarregue a página para ver todas as mudanças.",
       });
     } catch (error: any) {
       toast({
@@ -270,15 +287,23 @@ export function WhitelabelSettings() {
 
           <div className="space-y-2">
             <Label htmlFor="font-family">Fonte</Label>
-            <Input
-              id="font-family"
-              type="text"
+            <Select
               value={settings.font_family}
-              onChange={(e) =>
-                setSettings({ ...settings, font_family: e.target.value })
+              onValueChange={(value) =>
+                setSettings({ ...settings, font_family: value })
               }
-              placeholder="Inter"
-            />
+            >
+              <SelectTrigger id="font-family">
+                <SelectValue placeholder="Selecione uma fonte" />
+              </SelectTrigger>
+              <SelectContent>
+                {fontOptions.map((font) => (
+                  <SelectItem key={font.value} value={font.value}>
+                    {font.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +15,7 @@ export default function Auth() {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { settings } = useThemeSettings();
   const { toast } = useToast();
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -61,13 +63,21 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-subtle p-4">
+    <div className="min-h-screen flex items-center justify-center gradient-subtle p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
-            <div className="h-12 w-12 rounded-lg bg-gradient-primary flex items-center justify-center text-white font-bold text-xl">
-              T
-            </div>
+            {settings.logo_url ? (
+              <img 
+                src={settings.logo_url} 
+                alt="Logo" 
+                className="h-16 w-16 object-contain"
+              />
+            ) : (
+              <div className="h-12 w-12 rounded-lg bg-gradient-primary flex items-center justify-center text-white font-bold text-xl">
+                T
+              </div>
+            )}
           </div>
           <CardTitle className="text-2xl text-center">
             {isSignUp ? "Criar Conta" : "Bem-vindo de Volta"}

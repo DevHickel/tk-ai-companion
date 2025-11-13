@@ -7,6 +7,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/chat/AppSidebar";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import Auth from "./pages/Auth";
 import Chat from "./pages/Chat";
 import Profile from "./pages/Profile";
@@ -117,13 +118,15 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <ThemeProvider>
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <AppRoutes />
-          </TooltipProvider>
-        </AuthProvider>
+        <ThemeSettingsProvider>
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <AppRoutes />
+            </TooltipProvider>
+          </AuthProvider>
+        </ThemeSettingsProvider>
       </ThemeProvider>
     </BrowserRouter>
   </QueryClientProvider>
