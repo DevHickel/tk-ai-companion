@@ -43,7 +43,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="h-14 border-b bg-background flex items-center px-4 md:hidden">
+          <header className="h-14 border-b bg-background flex items-center px-4">
             <SidebarTrigger />
           </header>
           <main className="flex-1">{children}</main>
