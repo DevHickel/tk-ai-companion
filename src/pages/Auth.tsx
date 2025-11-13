@@ -9,10 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 
 export default function Auth() {
-  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { settings } = useThemeSettings();
@@ -23,34 +21,14 @@ export default function Auth() {
     setLoading(true);
 
     try {
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-            data: {
-              full_name: fullName,
-            },
-          },
-        });
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-        if (error) throw error;
+      if (error) throw error;
 
-        toast({
-          title: "Sucesso!",
-          description: "Verifique seu e-mail para confirmar sua conta.",
-        });
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) throw error;
-
-        navigate("/chat");
-      }
+      navigate("/chat");
     } catch (error: any) {
       toast({
         title: "Erro",
@@ -80,27 +58,14 @@ export default function Auth() {
             )}
           </div>
           <CardTitle className="text-2xl text-center">
-            {isSignUp ? "Criar Conta" : "Bem-vindo de Volta"}
+            Bem-vindo de Volta
           </CardTitle>
           <CardDescription className="text-center">
-            {isSignUp ? "Cadastre-se para começar a usar o TkSolution" : "Entre para continuar no TkSolution"}
+            Entre para continuar no TkSolution
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleAuth} className="space-y-4">
-            {isSignUp && (
-              <div className="space-y-2">
-                <Label htmlFor="fullName">Nome Completo</Label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  placeholder="João Silva"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required
-                />
-              </div>
-            )}
             <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
               <Input
@@ -125,19 +90,9 @@ export default function Auth() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Carregando..." : isSignUp ? "Cadastrar" : "Entrar"}
+              {loading ? "Carregando..." : "Entrar"}
             </Button>
           </form>
-          <div className="mt-4 text-center text-sm">
-            {isSignUp ? "Já tem uma conta?" : "Não tem uma conta?"}{" "}
-            <button
-              type="button"
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-primary hover:underline font-medium"
-            >
-              {isSignUp ? "Entrar" : "Cadastrar"}
-            </button>
-          </div>
         </CardContent>
       </Card>
     </div>
