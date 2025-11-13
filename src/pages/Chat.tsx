@@ -196,15 +196,17 @@ export default function Chat() {
     }
   };
 
-  // Listen for new chat event
+  // Handle creating new conversation when navigating to /chat without ID
   useEffect(() => {
-    const handleNewChat = () => {
-      createNewConversation();
-    };
-
-    window.addEventListener('newChat', handleNewChat);
-    return () => window.removeEventListener('newChat', handleNewChat);
-  }, [user]);
+    if (!user) return;
+    
+    const conversationId = searchParams.get('id');
+    if (!conversationId && messages.length === 0 && !currentConversationId) {
+      // Only show welcome screen, don't auto-create
+      setMessages([]);
+      setCurrentConversationId(null);
+    }
+  }, [user, searchParams, messages.length, currentConversationId]);
 
   const saveMessage = async (role: "user" | "assistant", content: string) => {
     if (!currentConversationId || !user) return;

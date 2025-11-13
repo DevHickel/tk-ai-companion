@@ -180,16 +180,14 @@ export function AppSidebar() {
             <SidebarMenu>
               {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    onClick={() => {
-                      if (item.title === "Novo Chat") {
-                        window.dispatchEvent(new Event('newChat'));
-                      }
-                    }}
-                    className={!open ? "justify-center" : ""}
-                  >
-                    <item.icon className="h-4 w-4 flex-shrink-0" />
-                    {open && <span>{item.title}</span>}
+                  <SidebarMenuButton asChild>
+                    <NavLink 
+                      to="/chat"
+                      className={!open ? "justify-center" : ""}
+                    >
+                      <item.icon className="h-4 w-4 flex-shrink-0" />
+                      {open && <span>{item.title}</span>}
+                    </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
