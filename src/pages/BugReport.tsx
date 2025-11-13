@@ -5,12 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Bug, Upload } from "lucide-react";
+import { useAdmin } from "@/hooks/useAdmin";
+import { Bug, Upload, Shield } from "lucide-react";
+import { BugManagement } from "@/components/admin/BugManagement";
 
 export default function BugReport() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { isAdmin } = useAdmin();
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
   const [screenshot, setScreenshot] = useState<File | null>(null);
@@ -79,58 +83,94 @@ export default function BugReport() {
 
   return (
     <div className="min-h-screen bg-gradient-subtle p-6">
-      <div className="max-w-2xl mx-auto">
-        <Card className="shadow-soft">
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Bug className="h-6 w-6 text-primary" />
-              <CardTitle>Reportar um Bug</CardTitle>
-            </div>
-            <CardDescription>
-              Ajude-nos a melhorar o TkSolution reportando problemas que você encontrar
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="description">Descrição</Label>
-                <Textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Descreva o bug que você encontrou..."
-                  className="min-h-[150px] bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus-visible:ring-gray-500"
-                  required
-                />
-              </div>
+      <div className="max-w-4xl mx-auto">
+        <Tabs defaultValue="submit" className="w-full">
+          <TabsList className="grid w-full" style={{ gridTemplateColumns: isAdmin ? "1fr 1fr" : "1fr" }}>
+            <TabsTrigger value="submit" className="gap-2">
+              <Bug className="h-4 w-4" />
+              Enviar Report
+            </TabsTrigger>
+            {isAdmin && (
+              <TabsTrigger value="manage" className="gap-2">
+                <Shield className="h-4 w-4" />
+                Gerenciar Reports
+              </TabsTrigger>
+            )}
+          </TabsList>
 
-              <div className="space-y-2">
-                <Label htmlFor="screenshot">Captura de Tela (Opcional)</Label>
+          <TabsContent value="submit">
+            <Card className="shadow-soft">
+              <CardHeader>
                 <div className="flex items-center gap-2">
-                  <input
-                    type="file"
-                    id="screenshot"
-                    accept="image/*"
-                    onChange={(e) => setScreenshot(e.target.files?.[0] || null)}
-                    className="hidden"
-                  />
-                  <Label htmlFor="screenshot" className="cursor-pointer flex-1">
-                    <Button type="button" variant="outline" className="w-full border-gray-600 hover:bg-gray-700" asChild>
-                      <span>
-                        <Upload className="h-4 w-4 mr-2" />
-                        {screenshot ? screenshot.name : "Enviar Captura de Tela"}
-                      </span>
-                    </Button>
-                  </Label>
+                  <Bug className="h-6 w-6 text-primary" />
+                  <CardTitle>Reportar um Bug</CardTitle>
                 </div>
-              </div>
+                <CardDescription>
+                  Ajude-nos a melhorar o TkSolution reportando problemas que você encontrar
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Descrição</Label>
+                    <Textarea
+                      id="description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Descreva o bug que você encontrou..."
+                      className="min-h-[150px]"
+                      required
+                    />
+                  </div>
 
-              <Button type="submit" disabled={loading} className="w-full bg-gray-600 hover:bg-gray-700 text-white">
-                {loading ? "Enviando..." : "Enviar Relatório de Bug"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+                  <div className="space-y-2">
+                    <Label htmlFor="screenshot">Captura de Tela (Opcional)</Label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="file"
+                        id="screenshot"
+                        accept="image/*"
+                        onChange={(e) => setScreenshot(e.target.files?.[0] || null)}
+                        className="hidden"
+                      />
+                      <Label htmlFor="screenshot" className="cursor-pointer flex-1">
+                        <Button type="button" variant="outline" className="w-full" asChild>
+                          <span>
+                            <Upload className="h-4 w-4 mr-2" />
+                            {screenshot ? screenshot.name : "Enviar Captura de Tela"}
+                          </span>
+                        </Button>
+                      </Label>
+                    </div>
+                  </div>
+
+                  <Button type="submit" disabled={loading} className="w-full">
+                    {loading ? "Enviando..." : "Enviar Relatório de Bug"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {isAdmin && (
+            <TabsContent value="manage">
+              <Card className="shadow-soft">
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-6 w-6 text-primary" />
+                    <CardTitle>Gerenciar Reports de Bugs</CardTitle>
+                  </div>
+                  <CardDescription>
+                    Visualize e gerencie todos os bugs reportados pelos usuários
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <BugManagement />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
+        </Tabs>
       </div>
     </div>
   );
