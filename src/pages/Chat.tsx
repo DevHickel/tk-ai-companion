@@ -1,39 +1,153 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useThemeSettings } from "@/contexts/ThemeSettingsContext";
+import { supabase } from "@/integrations/supabase/client";
 import { ChatMessage } from "@/components/chat/ChatMessage";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 
 interface Message {
+  id?: string;
   role: "user" | "assistant";
   content: string;
+  created_at?: string;
 }
 
 export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { settings } = useThemeSettings();
+  const [searchParams] = useSearchParams();
+
+  // Load conversation from URL or create new one
+  useEffect(() => {
+    if (!user) return;
+
+    const conversationId = searchParams.get('id');
+    if (conversationId) {
+      loadConversation(conversationId);
+    } else {
+      createNewConversation();
+    }
+  }, [user, searchParams]);
+
+  const loadConversation = async (conversationId: string) => {
+    try {
+      const { data: messagesData, error } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      const typedMessages: Message[] = (messagesData || []).map(msg => ({
+        id: msg.id,
+        role: msg.role as "user" | "assistant",
+        content: msg.content,
+        created_at: msg.created_at
+      }));
+
+      setMessages(typedMessages);
+      setCurrentConversationId(conversationId);
+    } catch (error) {
+      console.error('Error loading conversation:', error);
+      toast({
+        title: "Erro",
+        description: "Falha ao carregar conversa",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const createNewConversation = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('conversations')
+        .insert({ user_id: user.id, title: 'Nova Conversa' })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setCurrentConversationId(data.id);
+      setMessages([]);
+      navigate(`/chat?id=${data.id}`, { replace: true });
+    } catch (error) {
+      console.error('Error creating conversation:', error);
+    }
+  };
 
   // Listen for new chat event
   useEffect(() => {
     const handleNewChat = () => {
-      setMessages([]);
+      createNewConversation();
     };
 
     window.addEventListener('newChat', handleNewChat);
     return () => window.removeEventListener('newChat', handleNewChat);
-  }, []);
+  }, [user]);
+
+  const saveMessage = async (role: "user" | "assistant", content: string) => {
+    if (!currentConversationId) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('messages')
+        .insert({
+          conversation_id: currentConversationId,
+          role,
+          content
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error saving message:', error);
+    }
+  };
+
+  const updateConversationTitle = async (firstMessage: string) => {
+    if (!currentConversationId) return;
+
+    try {
+      const title = firstMessage.slice(0, 50) + (firstMessage.length > 50 ? '...' : '');
+      await supabase
+        .from('conversations')
+        .update({ title })
+        .eq('id', currentConversationId);
+    } catch (error) {
+      console.error('Error updating conversation title:', error);
+    }
+  };
 
   const handleSend = async (content: string) => {
+    if (!currentConversationId) {
+      await createNewConversation();
+      return;
+    }
+
     const userMessage: Message = { role: "user", content };
     setMessages((prev) => [...prev, userMessage]);
     setLoading(true);
+
+    // Save user message
+    await saveMessage("user", content);
+
+    // Update conversation title if it's the first message
+    if (messages.length === 0) {
+      await updateConversationTitle(content);
+    }
 
     try {
       const response = await fetch("https://n8n.vetorix.com.br/webhook/TkSolution", {
@@ -43,7 +157,7 @@ export default function Chat() {
         },
         body: JSON.stringify({ 
           message: content,
-          sessionId: user?.id || `session-${Date.now()}`
+          sessionId: currentConversationId
         }),
       });
 
@@ -56,6 +170,9 @@ export default function Chat() {
       };
       
       setMessages((prev) => [...prev, aiMessage]);
+      
+      // Save assistant message
+      await saveMessage("assistant", aiMessage.content);
     } catch (error: any) {
       toast({
         title: "Erro",

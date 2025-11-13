@@ -1,8 +1,10 @@
-import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield, Trash2 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAdmin } from "@/hooks/useAdmin";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Sidebar,
   SidebarContent,
@@ -18,6 +20,13 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
+interface Conversation {
+  id: string;
+  title: string;
+  updated_at: string;
+}
 
 const navigationItems = [
   { title: "Novo Chat", url: "/chat", icon: Plus },
@@ -39,11 +48,74 @@ const getFooterItems = (isAdmin: boolean) => {
 
 export function AppSidebar() {
   const { open } = useSidebar();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { isAdmin } = useAdmin();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   
   const footerItems = getFooterItems(isAdmin);
+
+  // Load conversations
+  useEffect(() => {
+    if (!user) return;
+
+    loadConversations();
+
+    // Subscribe to realtime updates
+    const channel = supabase
+      .channel('conversations-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'conversations',
+          filter: `user_id=eq.${user.id}`
+        },
+        () => {
+          loadConversations();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
+  const loadConversations = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('conversations')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+      .limit(20);
+
+    if (!error && data) {
+      setConversations(data);
+    }
+  };
+
+  const deleteConversation = async (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const { error } = await supabase
+      .from('conversations')
+      .delete()
+      .eq('id', id);
+
+    if (!error) {
+      const currentId = searchParams.get('id');
+      if (currentId === id) {
+        navigate('/chat');
+      }
+    }
+  };
 
   return (
     <Sidebar collapsible="icon">
@@ -84,14 +156,35 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <ScrollArea className="h-[300px]">
               <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <NavLink to="/chat" className="hover:bg-sidebar-accent">
-                      <MessageSquare className="h-4 w-4" />
-                      {open && <span>Sessão de Chat 1</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                {conversations.length === 0 ? (
+                  <div className="text-sm text-muted-foreground text-center py-4">
+                    {open && "Nenhuma conversa ainda"}
+                  </div>
+                ) : (
+                  conversations.map((conv) => (
+                    <SidebarMenuItem key={conv.id}>
+                      <SidebarMenuButton asChild>
+                        <NavLink 
+                          to={`/chat?id=${conv.id}`} 
+                          className="hover:bg-sidebar-accent group relative"
+                        >
+                          <MessageSquare className="h-4 w-4" />
+                          {open && (
+                            <>
+                              <span className="flex-1 truncate">{conv.title}</span>
+                              <button
+                                onClick={(e) => deleteConversation(conv.id, e)}
+                                className="opacity-0 group-hover:opacity-100 hover:text-destructive"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
+                            </>
+                          )}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))
+                )}
               </SidebarMenu>
             </ScrollArea>
           </SidebarGroupContent>
