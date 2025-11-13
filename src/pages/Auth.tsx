@@ -36,8 +36,8 @@ export default function Auth() {
         if (error) throw error;
 
         toast({
-          title: "Success!",
-          description: "Check your email to confirm your account.",
+          title: "Sucesso!",
+          description: "Verifique seu e-mail para confirmar sua conta.",
         });
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -51,7 +51,7 @@ export default function Auth() {
       }
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: "Erro",
         description: error.message,
         variant: "destructive",
       });
@@ -70,21 +70,21 @@ export default function Auth() {
             </div>
           </div>
           <CardTitle className="text-2xl text-center">
-            {isSignUp ? "Create Account" : "Welcome Back"}
+            {isSignUp ? "Criar Conta" : "Bem-vindo de Volta"}
           </CardTitle>
           <CardDescription className="text-center">
-            {isSignUp ? "Sign up to get started with TkSolution" : "Sign in to continue to TkSolution"}
+            {isSignUp ? "Cadastre-se para começar a usar o TkSolution" : "Entre para continuar no TkSolution"}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleAuth} className="space-y-4">
             {isSignUp && (
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">Nome Completo</Label>
                 <Input
                   id="fullName"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="João Silva"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
@@ -92,18 +92,18 @@ export default function Auth() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">E-mail</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="voce@exemplo.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Senha</Label>
               <Input
                 id="password"
                 type="password"
@@ -115,17 +115,17 @@ export default function Auth() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Loading..." : isSignUp ? "Sign Up" : "Sign In"}
+              {loading ? "Carregando..." : isSignUp ? "Cadastrar" : "Entrar"}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+            {isSignUp ? "Já tem uma conta?" : "Não tem uma conta?"}{" "}
             <button
               type="button"
               onClick={() => setIsSignUp(!isSignUp)}
               className="text-primary hover:underline font-medium"
             >
-              {isSignUp ? "Sign In" : "Sign Up"}
+              {isSignUp ? "Entrar" : "Cadastrar"}
             </button>
           </div>
         </CardContent>

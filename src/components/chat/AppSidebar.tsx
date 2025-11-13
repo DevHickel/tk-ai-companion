@@ -19,10 +19,10 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const navigationItems = [
-  { title: "New Chat", url: "/chat", icon: Plus },
-  { title: "Profile", url: "/profile", icon: User },
-  { title: "Settings", url: "/settings", icon: Settings },
-  { title: "Report Bug", url: "/bug-report", icon: Bug },
+  { title: "Novo Chat", url: "/chat", icon: Plus },
+  { title: "Perfil", url: "/profile", icon: User },
+  { title: "Configurações", url: "/settings", icon: Settings },
+  { title: "Reportar Bug", url: "/bug-report", icon: Bug },
 ];
 
 export function AppSidebar() {
@@ -43,7 +43,7 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className={!open ? "sr-only" : ""}>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className={!open ? "sr-only" : ""}>Navegação</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
@@ -61,7 +61,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className={!open ? "sr-only" : ""}>Recent Chats</SidebarGroupLabel>
+          <SidebarGroupLabel className={!open ? "sr-only" : ""}>Chats Recentes</SidebarGroupLabel>
           <SidebarGroupContent>
             <ScrollArea className="h-[300px]">
               <SidebarMenu>
@@ -69,7 +69,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <NavLink to="/chat" className="hover:bg-sidebar-accent">
                       <MessageSquare className="h-4 w-4" />
-                      {open && <span>Chat Session 1</span>}
+                      {open && <span>Sessão de Chat 1</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -87,7 +87,7 @@ export function AppSidebar() {
           className={`w-full ${!open ? "px-2" : "justify-start"}`}
         >
           {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-          {open && <span className="ml-2">{theme === "light" ? "Dark Mode" : "Light Mode"}</span>}
+          {open && <span className="ml-2">{theme === "light" ? "Modo Escuro" : "Modo Claro"}</span>}
         </Button>
         <Button
           variant="ghost"
@@ -96,7 +96,7 @@ export function AppSidebar() {
           className={`w-full ${!open ? "px-2" : "justify-start"}`}
         >
           <LogOut className="h-4 w-4" />
-          {open && <span className="ml-2">Sign Out</span>}
+          {open && <span className="ml-2">Sair</span>}
         </Button>
       </SidebarFooter>
     </Sidebar>

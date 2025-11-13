@@ -33,7 +33,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask TkSolution AI anything..."
+          placeholder="Pergunte qualquer coisa ao TkSolution AI..."
           className="min-h-[60px] max-h-[200px] resize-none rounded-xl"
           disabled={disabled}
         />

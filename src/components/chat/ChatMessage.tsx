@@ -18,7 +18,7 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
       </Avatar>
       <div className="flex-1 space-y-2 overflow-hidden">
         <div className="font-semibold text-sm">
-          {role === "user" ? "You" : "TkSolution AI"}
+          {role === "user" ? "Você" : "TkSolution AI"}
         </div>
         <div className="prose prose-sm dark:prose-invert max-w-none">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>

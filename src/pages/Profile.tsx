@@ -35,7 +35,7 @@ export default function Profile() {
         setFullName(data.full_name || "");
       }
     } catch (error: any) {
-      console.error("Error loading profile:", error);
+      console.error("Erro ao carregar perfil:", error);
     }
   };
 
@@ -52,12 +52,12 @@ export default function Profile() {
       if (error) throw error;
 
       toast({
-        title: "Success!",
-        description: "Profile updated successfully.",
+        title: "Sucesso!",
+        description: "Perfil atualizado com sucesso.",
       });
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: "Erro",
         description: error.message,
         variant: "destructive",
       });
@@ -87,12 +87,12 @@ export default function Profile() {
 
       setAvatarUrl(data.publicUrl);
       toast({
-        title: "Success!",
-        description: "Avatar uploaded successfully.",
+        title: "Sucesso!",
+        description: "Avatar enviado com sucesso.",
       });
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: "Erro",
         description: error.message,
         variant: "destructive",
       });
@@ -104,8 +104,8 @@ export default function Profile() {
       <div className="max-w-2xl mx-auto space-y-6">
         <Card className="shadow-soft">
           <CardHeader>
-            <CardTitle>Profile Settings</CardTitle>
-            <CardDescription>Manage your account information</CardDescription>
+            <CardTitle>Configurações do Perfil</CardTitle>
+            <CardDescription>Gerencie as informações da sua conta</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex flex-col items-center gap-4">
@@ -127,7 +127,7 @@ export default function Profile() {
                   <Button type="button" variant="outline" size="sm" asChild>
                     <span>
                       <Upload className="h-4 w-4 mr-2" />
-                      Upload Avatar
+                      Enviar Avatar
                     </span>
                   </Button>
                 </Label>
@@ -136,7 +136,7 @@ export default function Profile() {
 
             <form onSubmit={handleUpdateProfile} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">E-mail</Label>
                 <Input
                   id="email"
                   type="email"
@@ -147,18 +147,18 @@ export default function Profile() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">Nome Completo</Label>
                 <Input
                   id="fullName"
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Enter your full name"
+                  placeholder="Digite seu nome completo"
                 />
               </div>
 
               <Button type="submit" disabled={loading} className="w-full">
-                {loading ? "Saving..." : "Save Changes"}
+                {loading ? "Salvando..." : "Salvar Alterações"}
               </Button>
             </form>
           </CardContent>

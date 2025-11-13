@@ -19,8 +19,8 @@ export default function BugReport() {
     e.preventDefault();
     if (!description.trim()) {
       toast({
-        title: "Error",
-        description: "Please provide a description",
+        title: "Erro",
+        description: "Por favor, forneça uma descrição",
         variant: "destructive",
       });
       return;
@@ -60,15 +60,15 @@ export default function BugReport() {
       if (error) throw error;
 
       toast({
-        title: "Success!",
-        description: "Bug report submitted successfully.",
+        title: "Sucesso!",
+        description: "Relatório de bug enviado com sucesso.",
       });
 
       setDescription("");
       setScreenshot(null);
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: "Erro",
         description: error.message,
         variant: "destructive",
       });
@@ -84,28 +84,28 @@ export default function BugReport() {
           <CardHeader>
             <div className="flex items-center gap-2">
               <Bug className="h-6 w-6 text-primary" />
-              <CardTitle>Report a Bug</CardTitle>
+              <CardTitle>Reportar um Bug</CardTitle>
             </div>
             <CardDescription>
-              Help us improve TkSolution by reporting issues you encounter
+              Ajude-nos a melhorar o TkSolution reportando problemas que você encontrar
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Descrição</Label>
                 <Textarea
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Describe the bug you encountered..."
+                  placeholder="Descreva o bug que você encontrou..."
                   className="min-h-[150px]"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="screenshot">Screenshot (Optional)</Label>
+                <Label htmlFor="screenshot">Captura de Tela (Opcional)</Label>
                 <div className="flex items-center gap-2">
                   <input
                     type="file"
@@ -118,7 +118,7 @@ export default function BugReport() {
                     <Button type="button" variant="outline" className="w-full" asChild>
                       <span>
                         <Upload className="h-4 w-4 mr-2" />
-                        {screenshot ? screenshot.name : "Upload Screenshot"}
+                        {screenshot ? screenshot.name : "Enviar Captura de Tela"}
                       </span>
                     </Button>
                   </Label>
@@ -126,7 +126,7 @@ export default function BugReport() {
               </div>
 
               <Button type="submit" disabled={loading} className="w-full">
-                {loading ? "Submitting..." : "Submit Bug Report"}
+                {loading ? "Enviando..." : "Enviar Relatório de Bug"}
               </Button>
             </form>
           </CardContent>

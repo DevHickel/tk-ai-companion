@@ -28,19 +28,19 @@ export default function Chat() {
         body: JSON.stringify({ message: content }),
       });
 
-      if (!response.ok) throw new Error("Failed to get response");
+      if (!response.ok) throw new Error("Falha ao obter resposta");
 
       const data = await response.json();
       const aiMessage: Message = { 
         role: "assistant", 
-        content: data.response || data.message || "I received your message!" 
+        content: data.response || data.message || "Recebi sua mensagem!" 
       };
       
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
+        title: "Erro",
+        description: "Falha ao enviar mensagem. Por favor, tente novamente.",
         variant: "destructive",
       });
     } finally {
@@ -58,9 +58,9 @@ export default function Chat() {
                 <div className="h-20 w-20 rounded-2xl bg-gradient-primary flex items-center justify-center text-white font-bold text-3xl mb-6">
                   T
                 </div>
-                <h1 className="text-3xl font-bold mb-2">Welcome to TkSolution</h1>
+                <h1 className="text-3xl font-bold mb-2">Bem-vindo ao TkSolution</h1>
                 <p className="text-muted-foreground max-w-md">
-                  Your AI Engineering Assistant is ready to help. Ask me anything about engineering, coding, or technical problems!
+                  Seu Assistente de Engenharia AI está pronto para ajudar. Me pergunte qualquer coisa sobre engenharia, programação ou problemas técnicos!
                 </p>
               </div>
             ) : (
