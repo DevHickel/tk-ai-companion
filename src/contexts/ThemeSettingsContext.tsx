@@ -63,13 +63,6 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
     const saturation = parseInt(s);
     const lightness = parseInt(l);
     
-    // Apply secondary color for cards, inputs, borders
-    const secondaryHSL = hexToHSL(themeSettings.secondary_color);
-    const [h2, s2, l2] = secondaryHSL.split(' ');
-    const hue2 = parseInt(h2);
-    const saturation2 = parseInt(s2);
-    const lightness2 = parseInt(l2);
-    
     // Create background color based on primary (very light in light mode, dark in dark mode)
     const isDark = document.documentElement.classList.contains('dark');
     if (isDark) {
@@ -92,28 +85,6 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
         "--sidebar-border",
         `${hue} ${Math.min(saturation, 20)}% ${Math.min(lightness, 25)}%`
       );
-      
-      // Use secondary color for cards, inputs, borders in dark mode
-      document.documentElement.style.setProperty(
-        "--card",
-        `${hue2} ${Math.min(saturation2, 20)}% ${Math.min(lightness2, 15)}%`
-      );
-      document.documentElement.style.setProperty(
-        "--input",
-        `${hue2} ${Math.min(saturation2, 20)}% ${Math.min(lightness2, 25)}%`
-      );
-      document.documentElement.style.setProperty(
-        "--border",
-        `${hue2} ${Math.min(saturation2, 20)}% ${Math.min(lightness2, 25)}%`
-      );
-      document.documentElement.style.setProperty(
-        "--muted",
-        `${hue2} ${Math.min(saturation2, 20)}% ${Math.min(lightness2, 20)}%`
-      );
-      document.documentElement.style.setProperty(
-        "--popover",
-        `${hue2} ${Math.min(saturation2, 20)}% ${Math.min(lightness2, 15)}%`
-      );
     } else {
       // Light mode: use primary color but very light for background
       document.documentElement.style.setProperty(
@@ -134,28 +105,6 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
         "--sidebar-border",
         `${hue} ${Math.min(saturation, 20)}% ${Math.max(lightness, 90)}%`
       );
-      
-      // Use secondary color for cards, inputs, borders in light mode
-      document.documentElement.style.setProperty(
-        "--card",
-        `${hue2} ${Math.min(saturation2, 10)}% ${Math.max(lightness2, 100)}%`
-      );
-      document.documentElement.style.setProperty(
-        "--input",
-        `${hue2} ${Math.min(saturation2, 20)}% ${Math.max(lightness2, 90)}%`
-      );
-      document.documentElement.style.setProperty(
-        "--border",
-        `${hue2} ${Math.min(saturation2, 20)}% ${Math.max(lightness2, 90)}%`
-      );
-      document.documentElement.style.setProperty(
-        "--muted",
-        `${hue2} ${Math.min(saturation2, 20)}% ${Math.max(lightness2, 96)}%`
-      );
-      document.documentElement.style.setProperty(
-        "--popover",
-        `${hue2} ${Math.min(saturation2, 10)}% ${Math.max(lightness2, 100)}%`
-      );
     }
 
     // Apply primary color for highlights and accents
@@ -168,12 +117,6 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
     document.documentElement.style.setProperty(
       "--ring",
       primaryHSL
-    );
-
-    // Apply secondary color
-    document.documentElement.style.setProperty(
-      "--secondary",
-      secondaryHSL
     );
 
     // Apply button color
