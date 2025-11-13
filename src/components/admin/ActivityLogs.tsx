@@ -139,7 +139,7 @@ export function ActivityLogs() {
                 <SelectItem value="all">Todas as ações</SelectItem>
                 {uniqueActions.map((action) => (
                   <SelectItem key={action} value={action}>
-                    {action}
+                    {translateAction(action)}
                   </SelectItem>
                 ))}
               </SelectContent>
