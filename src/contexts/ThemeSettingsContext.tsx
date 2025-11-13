@@ -56,10 +56,33 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
   }
 
   function applyTheme(themeSettings: ThemeSettings) {
+    // Apply primary color as background
+    const primaryHSL = hexToHSL(themeSettings.primary_color);
+    const [h, s, l] = primaryHSL.split(' ');
+    const hue = parseInt(h);
+    const saturation = parseInt(s);
+    const lightness = parseInt(l);
+    
+    // Create background color based on primary (very light in light mode, dark in dark mode)
+    const isDark = document.documentElement.classList.contains('dark');
+    if (isDark) {
+      // Dark mode: use primary color but much darker
+      document.documentElement.style.setProperty(
+        "--background",
+        `${hue} ${Math.min(saturation, 25)}% ${Math.min(lightness, 12)}%`
+      );
+    } else {
+      // Light mode: use primary color but very light
+      document.documentElement.style.setProperty(
+        "--background",
+        `${hue} ${Math.min(saturation, 20)}% ${Math.max(lightness, 98)}%`
+      );
+    }
+
     // Apply primary color
     document.documentElement.style.setProperty(
       "--primary",
-      hexToHSL(themeSettings.primary_color)
+      primaryHSL
     );
 
     // Apply secondary color (for chat background)
@@ -120,7 +143,21 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     loadSettings();
-  }, []);
+    
+    // Re-apply theme when dark mode changes
+    const observer = new MutationObserver(() => {
+      if (settings.primary_color) {
+        applyTheme(settings);
+      }
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    return () => observer.disconnect();
+  }, [settings]);
 
   return (
     <ThemeSettingsContext.Provider value={{ settings, refreshSettings: loadSettings }}>
