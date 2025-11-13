@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,6 +39,7 @@ export function WhitelabelSettings() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchSettings();
@@ -84,6 +86,20 @@ export function WhitelabelSettings() {
 
       if (error) throw error;
 
+      // Log activity
+      if (user) {
+        await supabase.from("activity_logs").insert({
+          user_id: user.id,
+          action: "settings_updated",
+          details: {
+            primary_color: settings.primary_color,
+            secondary_color: settings.secondary_color,
+            button_color: settings.button_color,
+            font_family: settings.font_family,
+          },
+        });
+      }
+
       // Update CSS variables dynamically
       document.documentElement.style.setProperty(
         "--primary",
@@ -112,7 +128,7 @@ export function WhitelabelSettings() {
 
       toast({
         title: "Sucesso",
-        description: "Configurações atualizadas. Recarregue a página para ver todas as mudanças.",
+        description: "Configurações atualizadas para todos os usuários!",
       });
     } catch (error: any) {
       toast({

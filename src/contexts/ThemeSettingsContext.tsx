@@ -73,10 +73,24 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
     // Create background color based on primary (very light in light mode, dark in dark mode)
     const isDark = document.documentElement.classList.contains('dark');
     if (isDark) {
-      // Dark mode: use primary color but much darker for background
+      // Dark mode: use primary color for sidebar and background
       document.documentElement.style.setProperty(
         "--background",
         `${hue} ${Math.min(saturation, 25)}% ${Math.min(lightness, 12)}%`
+      );
+      
+      // Sidebar with primary color
+      document.documentElement.style.setProperty(
+        "--sidebar-background",
+        `${hue} ${Math.min(saturation, 25)}% ${Math.min(lightness, 10)}%`
+      );
+      document.documentElement.style.setProperty(
+        "--sidebar-accent",
+        `${hue} ${Math.min(saturation, 20)}% ${Math.min(lightness, 20)}%`
+      );
+      document.documentElement.style.setProperty(
+        "--sidebar-border",
+        `${hue} ${Math.min(saturation, 20)}% ${Math.min(lightness, 25)}%`
       );
       
       // Use secondary color for cards, inputs, borders in dark mode
@@ -105,6 +119,20 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
       document.documentElement.style.setProperty(
         "--background",
         `${hue} ${Math.min(saturation, 20)}% ${Math.max(lightness, 98)}%`
+      );
+      
+      // Sidebar with primary color in light mode
+      document.documentElement.style.setProperty(
+        "--sidebar-background",
+        `${hue} ${Math.min(saturation, 15)}% ${Math.max(lightness, 98)}%`
+      );
+      document.documentElement.style.setProperty(
+        "--sidebar-accent",
+        `${hue} ${Math.min(saturation, 20)}% ${Math.max(lightness, 96)}%`
+      );
+      document.documentElement.style.setProperty(
+        "--sidebar-border",
+        `${hue} ${Math.min(saturation, 20)}% ${Math.max(lightness, 90)}%`
       );
       
       // Use secondary color for cards, inputs, borders in light mode
@@ -201,6 +229,22 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     loadSettings();
     
+    // Listen for real-time changes to app_settings
+    const channel = supabase
+      .channel('app_settings_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'app_settings',
+        },
+        () => {
+          loadSettings();
+        }
+      )
+      .subscribe();
+    
     // Re-apply theme when dark mode changes
     const observer = new MutationObserver(() => {
       if (settings.primary_color) {
@@ -213,7 +257,10 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
       attributeFilter: ['class']
     });
     
-    return () => observer.disconnect();
+    return () => {
+      channel.unsubscribe();
+      observer.disconnect();
+    };
   }, [settings]);
 
   return (
