@@ -243,9 +243,13 @@ export function UserManagement() {
                       <TableCell>{user.full_name || "—"}</TableCell>
                       <TableCell>
                         {isAdmin ? (
-                          <Badge variant="default">Admin</Badge>
+                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                            Admin
+                          </span>
                         ) : (
-                          <Badge variant="secondary">Usuário</Badge>
+                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                            Usuário
+                          </span>
                         )}
                       </TableCell>
                       <TableCell className="text-right space-x-2">
