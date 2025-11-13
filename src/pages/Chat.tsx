@@ -37,6 +37,44 @@ export default function Chat() {
     }
   }, [user, searchParams]);
 
+  // Subscribe to realtime message updates
+  useEffect(() => {
+    if (!currentConversationId) return;
+
+    const channel = supabase
+      .channel(`messages-${currentConversationId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `conversation_id=eq.${currentConversationId}`
+        },
+        (payload) => {
+          const newMessage: Message = {
+            id: payload.new.id,
+            role: payload.new.role as "user" | "assistant",
+            content: payload.new.content,
+            created_at: payload.new.created_at
+          };
+          
+          setMessages((prev) => {
+            // Avoid duplicates
+            if (prev.some(msg => msg.id === newMessage.id)) {
+              return prev;
+            }
+            return [...prev, newMessage];
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [currentConversationId]);
+
   const loadConversation = async (conversationId: string) => {
     try {
       const { data: messagesData, error } = await supabase
