@@ -1,0 +1,104 @@
+import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun } from "lucide-react";
+import { NavLink } from "@/components/NavLink";
+import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarHeader,
+  SidebarFooter,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+const navigationItems = [
+  { title: "New Chat", url: "/chat", icon: Plus },
+  { title: "Profile", url: "/profile", icon: User },
+  { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Report Bug", url: "/bug-report", icon: Bug },
+];
+
+export function AppSidebar() {
+  const { open } = useSidebar();
+  const { signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+
+  return (
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="p-4 border-b">
+        <div className={`flex items-center gap-2 ${!open ? "justify-center" : ""}`}>
+          <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center text-white font-bold">
+            T
+          </div>
+          {open && <span className="font-bold text-lg">TkSolution</span>}
+        </div>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel className={!open ? "sr-only" : ""}>Navigation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navigationItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink to={item.url} className="hover:bg-sidebar-accent" activeClassName="bg-sidebar-accent">
+                      <item.icon className="h-4 w-4" />
+                      {open && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className={!open ? "sr-only" : ""}>Recent Chats</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <ScrollArea className="h-[300px]">
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink to="/chat" className="hover:bg-sidebar-accent">
+                      <MessageSquare className="h-4 w-4" />
+                      {open && <span>Chat Session 1</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </ScrollArea>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter className="p-4 border-t space-y-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleTheme}
+          className={`w-full ${!open ? "px-2" : "justify-start"}`}
+        >
+          {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+          {open && <span className="ml-2">{theme === "light" ? "Dark Mode" : "Light Mode"}</span>}
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={signOut}
+          className={`w-full ${!open ? "px-2" : "justify-start"}`}
+        >
+          <LogOut className="h-4 w-4" />
+          {open && <span className="ml-2">Sign Out</span>}
+        </Button>
+      </SidebarFooter>
+    </Sidebar>
+  );
+}
