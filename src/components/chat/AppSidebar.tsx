@@ -1,7 +1,8 @@
-import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun } from "lucide-react";
+import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAdmin } from "@/hooks/useAdmin";
 import {
   Sidebar,
   SidebarContent,
@@ -22,16 +23,27 @@ const navigationItems = [
   { title: "Novo Chat", url: "/chat", icon: Plus },
 ];
 
-const footerItems = [
-  { title: "Perfil", url: "/profile", icon: User },
-  { title: "Configurações", url: "/settings", icon: Settings },
-  { title: "Reportar Bug", url: "/bug-report", icon: Bug },
-];
+const getFooterItems = (isAdmin: boolean) => {
+  const items = [
+    { title: "Perfil", url: "/profile", icon: User },
+    { title: "Configurações", url: "/settings", icon: Settings },
+    { title: "Reportar Bug", url: "/bug-report", icon: Bug },
+  ];
+  
+  if (isAdmin) {
+    items.unshift({ title: "Admin", url: "/admin", icon: Shield });
+  }
+  
+  return items;
+};
 
 export function AppSidebar() {
   const { open } = useSidebar();
   const { signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { isAdmin } = useAdmin();
+  
+  const footerItems = getFooterItems(isAdmin);
 
   return (
     <Sidebar collapsible="icon">

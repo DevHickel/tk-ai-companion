@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import Chat from "./pages/Chat";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import Admin from "./pages/Admin";
 import BugReport from "./pages/BugReport";
 import NotFound from "./pages/NotFound";
 
@@ -82,6 +83,16 @@ function AppRoutes() {
           <ProtectedRoute>
             <AppLayout>
               <Settings />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <Admin />
             </AppLayout>
           </ProtectedRoute>
         }

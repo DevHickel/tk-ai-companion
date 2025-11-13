@@ -1,0 +1,300 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2, Mail, Trash2, Shield, UserX } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+
+interface Profile {
+  id: string;
+  email: string;
+  full_name: string | null;
+  user_roles?: Array<{ role: string }>;
+}
+
+export function UserManagement() {
+  const [users, setUsers] = useState<Profile[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviting, setInviting] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  async function fetchUsers() {
+    try {
+      // First get all profiles
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("email");
+
+      if (profilesError) throw profilesError;
+
+      // Then get all user roles
+      const { data: rolesData, error: rolesError } = await supabase
+        .from("user_roles")
+        .select("*");
+
+      if (rolesError) throw rolesError;
+
+      // Combine the data
+      const combinedData = (profilesData || []).map((profile) => ({
+        ...profile,
+        user_roles: (rolesData || [])
+          .filter((role) => role.user_id === profile.id)
+          .map((role) => ({ role: role.role })),
+      }));
+
+      setUsers(combinedData);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      toast({
+        title: "Erro",
+        description: "Falha ao carregar usuários",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleInviteUser() {
+    if (!inviteEmail) {
+      toast({
+        title: "Erro",
+        description: "Digite um email válido",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setInviting(true);
+    try {
+      const { error } = await supabase.auth.admin.inviteUserByEmail(inviteEmail);
+
+      if (error) throw error;
+
+      toast({
+        title: "Sucesso",
+        description: `Convite enviado para ${inviteEmail}`,
+      });
+      setInviteEmail("");
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message || "Falha ao enviar convite",
+        variant: "destructive",
+      });
+    } finally {
+      setInviting(false);
+    }
+  }
+
+  async function handleDeleteUser(userId: string, email: string) {
+    try {
+      const { error } = await supabase.auth.admin.deleteUser(userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Sucesso",
+        description: `Usuário ${email} removido`,
+      });
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message || "Falha ao remover usuário",
+        variant: "destructive",
+      });
+    }
+  }
+
+  async function handleToggleAdmin(userId: string, currentlyAdmin: boolean) {
+    try {
+      if (currentlyAdmin) {
+        const { error } = await supabase
+          .from("user_roles")
+          .delete()
+          .eq("user_id", userId)
+          .eq("role", "admin");
+
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("user_roles")
+          .insert({ user_id: userId, role: "admin" });
+
+        if (error) throw error;
+      }
+
+      toast({
+        title: "Sucesso",
+        description: currentlyAdmin
+          ? "Permissões de admin removidas"
+          : "Usuário promovido a admin",
+      });
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message || "Falha ao atualizar permissões",
+        variant: "destructive",
+      });
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Gerenciar Usuários</CardTitle>
+        <CardDescription>
+          Convide novos usuários e gerencie permissões
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="flex gap-4">
+          <div className="flex-1 space-y-2">
+            <Label htmlFor="invite-email">Convidar Novo Usuário</Label>
+            <Input
+              id="invite-email"
+              type="email"
+              placeholder="email@exemplo.com"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleInviteUser()}
+            />
+          </div>
+          <div className="flex items-end">
+            <Button onClick={handleInviteUser} disabled={inviting}>
+              {inviting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <Mail className="mr-2 h-4 w-4" />
+                  Enviar Convite
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Email</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                    Nenhum usuário encontrado
+                  </TableCell>
+                </TableRow>
+              ) : (
+                users.map((user) => {
+                  const isAdmin = user.user_roles?.some(
+                    (role) => role.role === "admin"
+                  );
+                  return (
+                    <TableRow key={user.id}>
+                      <TableCell className="font-medium">{user.email}</TableCell>
+                      <TableCell>{user.full_name || "—"}</TableCell>
+                      <TableCell>
+                        {isAdmin ? (
+                          <Badge variant="default">Admin</Badge>
+                        ) : (
+                          <Badge variant="secondary">Usuário</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleToggleAdmin(user.id, isAdmin)}
+                        >
+                          {isAdmin ? (
+                            <>
+                              <UserX className="h-4 w-4 mr-1" />
+                              Remover Admin
+                            </>
+                          ) : (
+                            <>
+                              <Shield className="h-4 w-4 mr-1" />
+                              Tornar Admin
+                            </>
+                          )}
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="destructive" size="sm">
+                              <Trash2 className="h-4 w-4 mr-1" />
+                              Remover
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Confirmar Remoção</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Tem certeza que deseja remover o usuário {user.email}?
+                                Esta ação não pode ser desfeita.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteUser(user.id, user.email)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Remover
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
