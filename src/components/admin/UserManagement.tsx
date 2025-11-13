@@ -88,9 +88,15 @@ export function UserManagement() {
 
     setInviting(true);
     try {
-      const { error } = await supabase.auth.admin.inviteUserByEmail(inviteEmail);
+      const { data, error } = await supabase.functions.invoke('invite-user', {
+        body: { email: inviteEmail }
+      });
 
       if (error) throw error;
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
 
       toast({
         title: "Sucesso",
