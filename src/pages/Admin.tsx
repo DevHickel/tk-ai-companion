@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ActivityLogs } from "@/components/admin/ActivityLogs";
 import { UserManagement } from "@/components/admin/UserManagement";
 import { WhitelabelSettings } from "@/components/admin/WhitelabelSettings";
+import { DocumentManagement } from "@/components/admin/DocumentManagement";
 import { useAdmin } from "@/hooks/useAdmin";
 import { Loader2 } from "lucide-react";
 
@@ -39,10 +40,11 @@ export default function Admin() {
       </div>
 
       <Tabs defaultValue="logs" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="logs">Logs de Atividade</TabsTrigger>
           <TabsTrigger value="users">Gerenciar Usuários</TabsTrigger>
           <TabsTrigger value="whitelabel">Design Plataforma</TabsTrigger>
+          <TabsTrigger value="documents">Gestão de Documentos</TabsTrigger>
         </TabsList>
 
         <TabsContent value="logs" className="mt-6">
@@ -55,6 +57,10 @@ export default function Admin() {
 
         <TabsContent value="whitelabel" className="mt-6">
           <WhitelabelSettings />
+        </TabsContent>
+
+        <TabsContent value="documents" className="mt-6">
+          <DocumentManagement />
         </TabsContent>
       </Tabs>
     </div>
