@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, Trash2, Loader2, FileText } from "lucide-react";
+import { Upload, Trash2, Loader2, FileText, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface GroupedDocument {
   source: string;
@@ -14,7 +15,7 @@ interface GroupedDocument {
 }
 
 export function DocumentManagement() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [documents, setDocuments] = useState<GroupedDocument[]>([]);
@@ -22,9 +23,40 @@ export function DocumentManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const { toast } = useToast();
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     loadDocuments();
+
+    // Setup Supabase Realtime subscription
+    const channel = supabase
+      .channel('documents-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'documents'
+        },
+        () => {
+          // Debounce the refresh to handle burst of inserts
+          if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+          }
+          
+          debounceTimerRef.current = setTimeout(() => {
+            loadDocuments();
+          }, 1000);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -76,10 +108,10 @@ export function DocumentManagement() {
   }
 
   async function handleUpload() {
-    if (!selectedFile) {
+    if (selectedFiles.length === 0) {
       toast({
         title: "Atenção",
-        description: "Selecione um arquivo PDF primeiro",
+        description: "Selecione pelo menos um arquivo PDF",
         variant: "destructive",
       });
       return;
@@ -89,7 +121,11 @@ export function DocumentManagement() {
 
     try {
       const formData = new FormData();
-      formData.append("data", selectedFile);
+      
+      // Append all files with the same key 'data'
+      selectedFiles.forEach(file => {
+        formData.append("data", file);
+      });
 
       const response = await fetch(
         "https://n8n.vetorix.com.br/form/7fe68a76-3359-4fb9-8e63-4909d487f04e",
@@ -103,22 +139,24 @@ export function DocumentManagement() {
 
       toast({
         title: "Sucesso",
-        description: "Arquivo enviado para processamento",
+        description: `${selectedFiles.length} arquivo(s) enviado(s) para processamento`,
       });
 
-      setSelectedFile(null);
-      // Reload documents after a delay to allow processing
-      setTimeout(() => loadDocuments(), 2000);
+      setSelectedFiles([]);
     } catch (error) {
       console.error("Upload error:", error);
       toast({
         title: "Erro",
-        description: "Não foi possível enviar o arquivo",
+        description: "Não foi possível enviar os arquivos",
         variant: "destructive",
       });
     } finally {
       setUploading(false);
     }
+  }
+
+  function removeFile(index: number) {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   }
 
   async function handleDelete(source: string) {
@@ -164,13 +202,17 @@ export function DocumentManagement() {
               <Input
                 type="file"
                 accept=".pdf"
-                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                multiple
+                onChange={(e) => {
+                  const files = Array.from(e.target.files || []);
+                  setSelectedFiles(files);
+                }}
                 disabled={uploading}
               />
             </div>
             <Button
               onClick={handleUpload}
-              disabled={!selectedFile || uploading}
+              disabled={selectedFiles.length === 0 || uploading}
             >
               {uploading ? (
                 <>
@@ -185,10 +227,26 @@ export function DocumentManagement() {
               )}
             </Button>
           </div>
-          {selectedFile && (
-            <p className="text-sm text-muted-foreground">
-              Arquivo selecionado: {selectedFile.name}
-            </p>
+          {selectedFiles.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-sm font-medium">
+                {selectedFiles.length} arquivo(s) selecionado(s):
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {selectedFiles.map((file, index) => (
+                  <Badge key={index} variant="secondary" className="gap-1">
+                    {file.name}
+                    <button
+                      onClick={() => removeFile(index)}
+                      className="ml-1 hover:text-destructive"
+                      disabled={uploading}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>
