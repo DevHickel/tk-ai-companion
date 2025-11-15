@@ -182,7 +182,7 @@ export default function Chat() {
       await saveMessage(newConv.id, "user", content);
 
       try {
-        const response = await fetch("https://n8n.vetorix.com.br/webhook/6abbe8e8-2ab3-409c-9036-af5dce9fafb5", {
+        const response = await fetch("https://n8n.vetorix.com.br/webhook/TkSolution", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -224,7 +224,7 @@ export default function Chat() {
     await saveMessage(currentConversationId, "user", content);
 
     try {
-      const response = await fetch("https://n8n.vetorix.com.br/webhook/6abbe8e8-2ab3-409c-9036-af5dce9fafb5", {
+      const response = await fetch("https://n8n.vetorix.com.br/webhook/TkSolution", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
