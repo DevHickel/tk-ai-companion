@@ -53,9 +53,9 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full bg-gray-900 dark:bg-gray-900">
         <AppSidebar />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col bg-background">
           <header className="h-14 border-b bg-background flex items-center justify-between px-4">
             <SidebarTrigger />
             
