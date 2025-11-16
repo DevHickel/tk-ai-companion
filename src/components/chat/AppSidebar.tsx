@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield, Trash2, Pin, Edit3, Command } from "lucide-react";
+import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield, Trash2, Pin, Edit3, Command, MoreHorizontal } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -33,6 +33,23 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Conversation {
   id: string;
@@ -67,6 +84,7 @@ export function AppSidebar() {
   const [searchParams] = useSearchParams();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const { settings } = useThemeSettings();
@@ -118,20 +136,28 @@ export function AppSidebar() {
     }
   };
 
-  const deleteConversation = async (id: string, e: React.MouseEvent) => {
+  const openDeleteDialog = (conv: Conversation, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    setSelectedConversation(conv);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedConversation) return;
 
     const { error } = await supabase
       .from('conversations')
       .delete()
-      .eq('id', id);
+      .eq('id', selectedConversation.id);
 
     if (!error) {
       const currentId = searchParams.get('id');
-      if (currentId === id) {
+      if (currentId === selectedConversation.id) {
         navigate('/chat');
       }
+      setDeleteDialogOpen(false);
+      setSelectedConversation(null);
     }
   };
 
@@ -230,47 +256,79 @@ export function AppSidebar() {
                   )
                 ) : (
                   conversations.map((conv) => (
-                    <SidebarMenuItem key={conv.id}>
-                      <SidebarMenuButton asChild>
-                        <NavLink 
-                          to={`/chat?id=${conv.id}`} 
-                          className={`hover:bg-sidebar-accent group relative flex items-center gap-2 ${!open ? "justify-center" : ""}`}
-                        >
-                          <MessageSquare className="h-4 w-4 flex-shrink-0" />
-                          {open && (
-                            <>
-                              <span className="flex-1 min-w-0 truncate">{conv.title}</span>
-                              <div className={`flex items-center gap-1 flex-shrink-0 transition-opacity ${conv.pinned ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                                <button
-                                  onClick={(e) => togglePinConversation(conv.id, conv.pinned, e)}
-                                  className={`p-1 rounded transition-colors ${
-                                    conv.pinned 
-                                      ? 'text-primary hover:bg-primary/10' 
-                                      : 'hover:text-primary hover:bg-accent'
-                                  }`}
-                                  title={conv.pinned ? "Desafixar" : "Fixar"}
-                                >
-                                  <Pin className={`h-3 w-3 ${conv.pinned ? 'fill-current' : ''}`} />
-                                </button>
-                                <button
-                                  onClick={(e) => openRenameDialog(conv, e)}
-                                  className="p-1 rounded transition-colors hover:text-primary hover:bg-accent"
-                                  title="Renomear"
-                                >
-                                  <Edit3 className="h-3 w-3" />
-                                </button>
-                                <button
-                                  onClick={(e) => deleteConversation(conv.id, e)}
-                                  className="p-1 rounded transition-colors hover:text-destructive hover:bg-destructive/10"
-                                  title="Excluir"
-                                >
-                                  <Trash2 className="h-3 w-3" />
-                                </button>
-                              </div>
-                            </>
-                          )}
-                        </NavLink>
-                      </SidebarMenuButton>
+                    <SidebarMenuItem key={conv.id} className="group/item">
+                      <div className="flex items-center gap-1 w-full">
+                        <SidebarMenuButton asChild className="flex-1">
+                          <NavLink 
+                            to={`/chat?id=${conv.id}`} 
+                            className={`flex items-center gap-2 ${!open ? "justify-center" : ""}`}
+                          >
+                            {conv.pinned && open ? (
+                              <Pin className="h-4 w-4 flex-shrink-0 fill-current text-primary" />
+                            ) : (
+                              <MessageSquare className="h-4 w-4 flex-shrink-0" />
+                            )}
+                            {open && <span className="flex-1 min-w-0 truncate">{conv.title}</span>}
+                          </NavLink>
+                        </SidebarMenuButton>
+                        
+                        {open && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 opacity-0 group-hover/item:opacity-100 transition-opacity flex-shrink-0"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                }}
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent 
+                              align="end"
+                              className="dark:bg-[#17181b] dark:border-zinc-800"
+                            >
+                              <DropdownMenuItem
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  togglePinConversation(conv.id, conv.pinned, e as any);
+                                }}
+                                className="cursor-pointer"
+                              >
+                                <Pin className={`h-4 w-4 mr-2 ${conv.pinned ? 'fill-current' : ''}`} />
+                                {conv.pinned ? 'Desafixar' : 'Fixar'}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  openRenameDialog(conv, e as any);
+                                }}
+                                className="cursor-pointer"
+                              >
+                                <Edit3 className="h-4 w-4 mr-2" />
+                                Renomear
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  openDeleteDialog(conv, e as any);
+                                }}
+                                className="cursor-pointer text-destructive focus:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Excluir
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                      </div>
                     </SidebarMenuItem>
                   ))
                 )}
@@ -321,7 +379,7 @@ export function AppSidebar() {
       </SidebarFooter>
 
       <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
-        <DialogContent>
+        <DialogContent className="dark:bg-[#17181b] dark:border-zinc-800">
           <DialogHeader>
             <DialogTitle>Renomear Conversa</DialogTitle>
             <DialogDescription>
@@ -354,6 +412,25 @@ export function AppSidebar() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="dark:bg-[#17181b] dark:border-zinc-800">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir Conversa</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir "{selectedConversation?.title}"? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteDialogOpen(false)}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Sidebar>
   );
 }
