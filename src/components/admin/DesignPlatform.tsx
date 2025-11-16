@@ -344,21 +344,6 @@ export function DesignPlatform() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label>Imagem de Fundo</Label>
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "login_bg_url")}
-                disabled={uploading === "login_bg_url"}
-              />
-              {settings.login_bg_url && (
-                <p className="text-xs text-muted-foreground">
-                  Imagem atual carregada
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="login_headline">Mensagem de Boas-Vindas</Label>
               <Input
                 id="login_headline"
