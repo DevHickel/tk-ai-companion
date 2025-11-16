@@ -217,7 +217,7 @@ export function UserManagement() {
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleInviteUser()}
-              className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus-visible:ring-gray-500"
+              className="bg-white text-slate-900 border-slate-200 placeholder:text-slate-400 dark:bg-zinc-900 dark:text-slate-50 dark:border-zinc-800"
             />
           </div>
           <div className="flex items-end">
@@ -268,22 +268,22 @@ export function UserManagement() {
                       <TableCell>{user.full_name || "—"}</TableCell>
                       <TableCell>
                         {isPending ? (
-                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
+                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-500/20 dark:text-yellow-400 dark:border-yellow-500/30">
                             Pendente
                           </span>
                         ) : (
-                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
+                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800 border border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/30">
                             Ativo
                           </span>
                         )}
                       </TableCell>
                       <TableCell>
                         {isAdmin ? (
-                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30">
                             Admin
                           </span>
                         ) : (
-                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30">
                             Usuário
                           </span>
                         )}
@@ -293,7 +293,7 @@ export function UserManagement() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleToggleAdmin(user.id, isAdmin)}
-                          className="border-gray-600 hover:bg-gray-700"
+                          className="border-slate-200 hover:bg-slate-100 dark:border-gray-600 dark:hover:bg-gray-700"
                         >
                           {isAdmin ? (
                             <>
@@ -307,11 +307,11 @@ export function UserManagement() {
                             </>
                           )}
                         </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="outline" size="sm" className="border-gray-600 hover:bg-gray-700 text-gray-300">
-                              <Trash2 className="h-4 w-4 mr-1" />
-                              Remover
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline" size="sm" className="border-slate-200 hover:bg-slate-100 text-slate-700 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-300">
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Remover
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
