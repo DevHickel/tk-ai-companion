@@ -258,7 +258,7 @@ export function AppSidebar() {
                   conversations.map((conv) => (
                     <SidebarMenuItem key={conv.id} className="group/item">
                       {open ? (
-                        <div className="group flex items-center justify-between w-full gap-2">
+                        <div className="group flex items-center w-full relative pr-10">
                           <NavLink 
                             to={`/chat?id=${conv.id}`} 
                             className="flex items-center gap-2 flex-1 min-w-0 hover:bg-sidebar-accent px-2 py-1.5 rounded-md"
@@ -268,7 +268,7 @@ export function AppSidebar() {
                             ) : (
                               <MessageSquare className="h-4 w-4 flex-shrink-0" />
                             )}
-                            <span className="flex-1 truncate text-left text-sm">{conv.title}</span>
+                            <span className="flex-1 min-w-0 truncate text-left text-sm">{conv.title}</span>
                           </NavLink>
                           
                           <DropdownMenu>
@@ -276,7 +276,7 @@ export function AppSidebar() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 shrink-0 opacity-0 group-hover/item:opacity-100 transition-opacity hover:bg-sidebar-accent"
+                                className="absolute right-1 h-8 w-8 opacity-0 group-hover/item:opacity-100 transition-opacity hover:bg-sidebar-accent"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
