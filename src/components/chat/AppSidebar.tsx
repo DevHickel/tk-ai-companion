@@ -287,11 +287,11 @@ export function AppSidebar() {
               <SidebarMenuButton asChild>
                 <NavLink 
                   to={item.url} 
-                  className={`hover:bg-sidebar-accent ${!open ? "justify-center" : ""}`}
+                  className="group-data-[collapsible=icon]:justify-center hover:bg-sidebar-accent group-data-[collapsible=icon]:px-0"
                   activeClassName="bg-sidebar-accent"
                 >
                   <item.icon className="h-4 w-4 flex-shrink-0" />
-                  {open && <span>{item.title}</span>}
+                  <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
                 </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -299,19 +299,19 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton 
               onClick={toggleTheme}
-              className={!open ? "justify-center" : ""}
+              className="group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
             >
               {theme === "light" ? <Moon className="h-4 w-4 flex-shrink-0" /> : <Sun className="h-4 w-4 flex-shrink-0" />}
-              {open && <span>{theme === "light" ? "Modo Escuro" : "Modo Claro"}</span>}
+              <span className="group-data-[collapsible=icon]:hidden">{theme === "light" ? "Modo Escuro" : "Modo Claro"}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton 
               onClick={signOut}
-              className={!open ? "justify-center" : ""}
+              className="group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
             >
               <LogOut className="h-4 w-4 flex-shrink-0" />
-              {open && <span>Sair</span>}
+              <span className="group-data-[collapsible=icon]:hidden">Sair</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
