@@ -14,6 +14,7 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const navigate = useNavigate();
   const { settings } = useThemeSettings();
   const { theme, toggleTheme } = useTheme();
@@ -52,6 +53,35 @@ export default function Auth() {
       }
 
       navigate("/chat");
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordRecovery = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/update-password`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Email Enviado",
+        description: "Verifique seu e-mail para redefinir a senha.",
+      });
+      
+      setIsRecoveryMode(false);
+      setEmail("");
     } catch (error: any) {
       toast({
         title: "Erro",
@@ -111,14 +141,16 @@ export default function Auth() {
             )}
           </div>
           <CardTitle className="text-2xl text-center">
-            Bem-vindo de Volta
+            {isRecoveryMode ? "Recuperar Senha" : "Bem-vindo de Volta"}
           </CardTitle>
           <CardDescription className="text-center">
-            Entre para continuar no TkSolution
+            {isRecoveryMode 
+              ? "Digite seu e-mail para recuperar sua senha" 
+              : "Entre para continuar no TkSolution"}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleAuth} className="space-y-4">
+          <form onSubmit={isRecoveryMode ? handlePasswordRecovery : handleAuth} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
               <Input
@@ -130,21 +162,48 @@ export default function Auth() {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-            </div>
+            
+            {!isRecoveryMode && (
+              <div className="space-y-2">
+                <Label htmlFor="password">Senha</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+            )}
+
+            {!isRecoveryMode && (
+              <button
+                type="button"
+                onClick={() => setIsRecoveryMode(true)}
+                className="text-sm text-primary hover:underline"
+              >
+                Esqueceu sua senha?
+              </button>
+            )}
+
             <Button type="submit" className="w-full text-white" disabled={loading}>
-              {loading ? "Carregando..." : "Entrar"}
+              {loading ? "Carregando..." : isRecoveryMode ? "Enviar Link de Recuperação" : "Entrar"}
             </Button>
+
+            {isRecoveryMode && (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsRecoveryMode(false);
+                  setEmail("");
+                }}
+                className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Voltar para o Login
+              </button>
+            )}
           </form>
         </CardContent>
       </Card>
