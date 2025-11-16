@@ -133,11 +133,21 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
         "--sidebar-border",
         `${hue} ${Math.min(saturation, 20)}% ${Math.min(lightness, 25)}%`
       );
+      
+      // Dark mode form elements
+      document.documentElement.style.setProperty(
+        "--input",
+        `${hue} 20% 25%`
+      );
+      document.documentElement.style.setProperty(
+        "--border",
+        `${hue} 20% 25%`
+      );
     } else {
       // Light mode: use primary color but very light for background
       document.documentElement.style.setProperty(
         "--background",
-        `${hue} ${Math.min(saturation, 20)}% ${Math.max(lightness, 98)}%`
+        `0 0% 100%`
       );
       
       // Sidebar with primary color in light mode
@@ -152,6 +162,16 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
       document.documentElement.style.setProperty(
         "--sidebar-border",
         `${hue} ${Math.min(saturation, 20)}% ${Math.max(lightness, 90)}%`
+      );
+      
+      // Light mode form elements - ensure they stay light
+      document.documentElement.style.setProperty(
+        "--input",
+        `210 20% 90%`
+      );
+      document.documentElement.style.setProperty(
+        "--border",
+        `210 20% 90%`
       );
     }
 
