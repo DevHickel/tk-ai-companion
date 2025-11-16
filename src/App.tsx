@@ -53,9 +53,9 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full" style={{ backgroundColor: '#808080' }}>
+      <div className="min-h-screen flex w-full dark:bg-[#17181b] bg-white">
         <AppSidebar />
-        <div className="flex-1 flex flex-col" style={{ backgroundColor: '#808080' }}>
+        <div className="flex-1 flex flex-col dark:bg-[#17181b] bg-white">
           <header className="h-14 border-b bg-background flex items-center justify-between px-4">
             <SidebarTrigger />
             
