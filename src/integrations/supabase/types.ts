@@ -48,30 +48,63 @@ export type Database = {
       }
       app_settings: {
         Row: {
+          border_radius: number | null
+          browser_title: string | null
           button_color: string | null
+          chat_ai_bg_color: string | null
+          chat_user_bg_color: string | null
+          favicon_url: string | null
           font_family: string | null
           id: number
+          login_bg_color: string | null
+          login_bg_url: string | null
+          login_headline: string | null
+          logo_dark_url: string | null
+          logo_light_url: string | null
           logo_url: string | null
           primary_color: string | null
           secondary_color: string | null
+          sidebar_bg_color: string | null
           updated_at: string | null
         }
         Insert: {
+          border_radius?: number | null
+          browser_title?: string | null
           button_color?: string | null
+          chat_ai_bg_color?: string | null
+          chat_user_bg_color?: string | null
+          favicon_url?: string | null
           font_family?: string | null
           id?: number
+          login_bg_color?: string | null
+          login_bg_url?: string | null
+          login_headline?: string | null
+          logo_dark_url?: string | null
+          logo_light_url?: string | null
           logo_url?: string | null
           primary_color?: string | null
           secondary_color?: string | null
+          sidebar_bg_color?: string | null
           updated_at?: string | null
         }
         Update: {
+          border_radius?: number | null
+          browser_title?: string | null
           button_color?: string | null
+          chat_ai_bg_color?: string | null
+          chat_user_bg_color?: string | null
+          favicon_url?: string | null
           font_family?: string | null
           id?: number
+          login_bg_color?: string | null
+          login_bg_url?: string | null
+          login_headline?: string | null
+          logo_dark_url?: string | null
+          logo_light_url?: string | null
           logo_url?: string | null
           primary_color?: string | null
           secondary_color?: string | null
+          sidebar_bg_color?: string | null
           updated_at?: string | null
         }
         Relationships: []
