@@ -280,15 +280,16 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t bg-transparent dark:border-[#1f1f22]">
+      <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-2 border-t bg-transparent dark:border-[#1f1f22]">
         <SidebarMenu className="space-y-1">
           {footerItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
                 <NavLink 
                   to={item.url} 
-                  className="group-data-[collapsible=icon]:justify-center hover:bg-sidebar-accent group-data-[collapsible=icon]:px-0"
+                  className="group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center hover:bg-sidebar-accent"
                   activeClassName="bg-sidebar-accent"
+                  title={item.title}
                 >
                   <item.icon className="h-4 w-4 flex-shrink-0" />
                   <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
@@ -299,7 +300,8 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton 
               onClick={toggleTheme}
-              className="group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+              className="group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center"
+              title={theme === "light" ? "Modo Escuro" : "Modo Claro"}
             >
               {theme === "light" ? <Moon className="h-4 w-4 flex-shrink-0" /> : <Sun className="h-4 w-4 flex-shrink-0" />}
               <span className="group-data-[collapsible=icon]:hidden">{theme === "light" ? "Modo Escuro" : "Modo Claro"}</span>
@@ -308,7 +310,8 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton 
               onClick={signOut}
-              className="group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+              className="group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center"
+              title="Sair"
             >
               <LogOut className="h-4 w-4 flex-shrink-0" />
               <span className="group-data-[collapsible=icon]:hidden">Sair</span>
