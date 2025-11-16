@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield, Trash2, Pin, Edit3, Command, MoreHorizontal } from "lucide-react";
+import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield, Trash2, Pin, Edit3, Command, MoreVertical } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -282,13 +282,13 @@ export function AppSidebar() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="absolute right-4 top-1/2 -translate-y-1/2 h-8 w-8 z-50 opacity-0 group-hover:opacity-100 transition-opacity bg-[#09090b] hover:bg-zinc-800 text-zinc-400 hover:text-white"
+                                className="absolute right-4 top-1/2 -translate-y-1/2 h-6 w-5 z-50 opacity-0 group-hover:opacity-100 transition-all bg-transparent hover:bg-[#09090b] text-zinc-500 hover:text-zinc-200"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
                                 }}
                               >
-                                <MoreHorizontal className="h-4 w-4" />
+                                <MoreVertical className="h-3.5 w-3.5" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent 
