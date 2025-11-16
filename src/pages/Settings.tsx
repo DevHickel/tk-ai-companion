@@ -13,7 +13,7 @@ export default function Settings() {
         <p className="text-muted-foreground">Gerencie suas preferências e configurações da plataforma</p>
       </div>
 
-      <Card>
+      <Card className="dark:bg-[#09090b] dark:border-zinc-800">
         <CardHeader>
           <CardTitle>Aparência</CardTitle>
           <CardDescription>Personalize a aparência da plataforma</CardDescription>
@@ -36,7 +36,7 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="dark:bg-[#09090b] dark:border-zinc-800">
         <CardHeader>
           <CardTitle>Notificações</CardTitle>
           <CardDescription>Configure suas preferências de notificação</CardDescription>
