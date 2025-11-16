@@ -221,7 +221,7 @@ export function UserManagement() {
             />
           </div>
           <div className="flex items-end">
-            <Button onClick={handleInviteUser} disabled={inviting}>
+            <Button onClick={handleInviteUser} disabled={inviting} className="text-white">
               {inviting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

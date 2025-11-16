@@ -144,7 +144,7 @@ export default function BugReport() {
                     </div>
                   </div>
 
-                  <Button type="submit" disabled={loading} className="w-full">
+                  <Button type="submit" disabled={loading} className="w-full text-white">
                     {loading ? "Enviando..." : "Enviar Relatório de Bug"}
                   </Button>
                 </form>

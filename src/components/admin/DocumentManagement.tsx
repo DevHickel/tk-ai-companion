@@ -213,6 +213,7 @@ export function DocumentManagement() {
             <Button
               onClick={handleUpload}
               disabled={selectedFiles.length === 0 || uploading}
+              className="text-white"
             >
               {uploading ? (
                 <>
