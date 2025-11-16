@@ -167,10 +167,11 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
       primaryHSL
     );
 
-    // Apply button color
+    // Apply button color (fallback to primary if not set)
+    const buttonColor = themeSettings.button_color || themeSettings.primary_color;
     document.documentElement.style.setProperty(
       "--button",
-      hexToHSL(themeSettings.button_color)
+      hexToHSL(buttonColor)
     );
 
     // Apply font family
