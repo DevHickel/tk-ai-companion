@@ -170,7 +170,7 @@ export function AppSidebar() {
     <Sidebar 
       collapsible="icon"
       style={{
-        backgroundColor: theme === 'dark' ? '#09090b' : (settings.sidebar_bg_color || '#ffffff')
+        backgroundColor: theme === 'dark' ? '#000000' : (settings.sidebar_bg_color || '#ffffff')
       }}
     >
       <SidebarHeader className={`p-4 border-b ${!open ? "p-2" : ""}`}>

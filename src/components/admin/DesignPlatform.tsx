@@ -284,9 +284,9 @@ export function DesignPlatform() {
   const userBubbleTextColor = getContrastColor(settings.chat_user_bg_color);
   const aiBubbleTextColor = getContrastColor(settings.chat_ai_bg_color);
   
-  // Dark mode preview uses default shadcn colors for sidebar/background
-  const previewSidebarBg = previewTheme === "dark" ? "#09090b" : settings.sidebar_bg_color;
-  const previewChatBg = previewTheme === "dark" ? "#18181b" : "#f9fafb";
+  // Dark mode preview uses specific hex colors
+  const previewSidebarBg = previewTheme === "dark" ? "#000000" : settings.sidebar_bg_color;
+  const previewChatBg = previewTheme === "dark" ? "#808080" : "#f9fafb";
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
