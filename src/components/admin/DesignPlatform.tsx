@@ -239,6 +239,10 @@ export function DesignPlatform() {
   const currentLogo = previewTheme === "light" ? settings.logo_light_url : settings.logo_dark_url;
   const userBubbleTextColor = getContrastColor(settings.chat_user_bg_color);
   const aiBubbleTextColor = getContrastColor(settings.chat_ai_bg_color);
+  
+  // Dark mode preview uses default shadcn colors for sidebar/background
+  const previewSidebarBg = previewTheme === "dark" ? "#09090b" : settings.sidebar_bg_color;
+  const previewChatBg = previewTheme === "dark" ? "#18181b" : "#f9fafb";
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -485,7 +489,7 @@ export function DesignPlatform() {
                   <div className="flex h-[400px]">
                     <div 
                       className="w-16 flex flex-col items-center py-4 space-y-4"
-                      style={{ backgroundColor: settings.sidebar_bg_color }}
+                      style={{ backgroundColor: previewSidebarBg }}
                     >
                       {currentLogo ? (
                         <img src={currentLogo} alt="Logo" className="h-8 w-8 object-contain" />
@@ -503,7 +507,7 @@ export function DesignPlatform() {
                     </div>
                     
                     {/* Chat Preview */}
-                    <div className={`flex-1 p-4 space-y-3 ${previewTheme === "dark" ? "bg-gray-800" : "bg-gray-50"}`}>
+                    <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: previewChatBg }}>
                       <div className="flex justify-end">
                         <div 
                           className="max-w-[70%] px-4 py-2 text-sm"

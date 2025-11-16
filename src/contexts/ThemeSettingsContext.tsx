@@ -44,11 +44,25 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
           secondary_color: (data as any).secondary_color || "#8b5cf6",
           button_color: (data as any).button_color || "#0ea5e9",
           font_family: data.font_family || "Inter",
-          logo_url: data.logo_url,
+          logo_url: data.logo_light_url || data.logo_url,
         };
         
         setSettings(newSettings);
         applyTheme(newSettings);
+        
+        // Update browser title and favicon
+        if (data.browser_title) {
+          document.title = data.browser_title;
+        }
+        if (data.favicon_url) {
+          let link: HTMLLinkElement | null = document.querySelector("link[rel~='icon']");
+          if (!link) {
+            link = document.createElement("link");
+            link.rel = "icon";
+            document.head.appendChild(link);
+          }
+          link.href = data.favicon_url;
+        }
       }
     } catch (error) {
       console.error("Error loading settings:", error);
