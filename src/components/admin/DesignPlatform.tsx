@@ -349,121 +349,26 @@ export function DesignPlatform() {
           </CardContent>
         </Card>
 
-        {/* Section B: Color Intelligence */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Cores da Marca</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="primary_color">Cor Primária (Ações Principais)</Label>
-              <Input
-                id="primary_color"
-                type="color"
-                value={settings.primary_color}
-                onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="button_color">Cor dos Botões (Normal)</Label>
-              <Input
-                id="button_color"
-                type="color"
-                value={settings.button_color || settings.primary_color}
-                onChange={(e) => setSettings({ ...settings, button_color: e.target.value })}
-              />
-              <p className="text-xs text-muted-foreground">
-                Cor de fundo padrão para botões de ação. Se vazio, usa a Cor Primária.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="button_hover_color">Cor dos Botões (Hover/Ao passar o mouse)</Label>
-              <Input
-                id="button_hover_color"
-                type="color"
-                value={settings.button_hover_color || settings.button_color || settings.primary_color}
-                onChange={(e) => setSettings({ ...settings, button_hover_color: e.target.value })}
-              />
-              <p className="text-xs text-muted-foreground">
-                Cor do botão quando o usuário passa o mouse. Se vazio, usa 10% mais escuro que a cor normal.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="sidebar_bg_color">Fundo da Sidebar</Label>
-              <Input
-                id="sidebar_bg_color"
-                type="color"
-                value={settings.sidebar_bg_color}
-                onChange={(e) => setSettings({ ...settings, sidebar_bg_color: e.target.value })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="chat_user_bg_color">Cor do Balão do Usuário</Label>
-              <Input
-                id="chat_user_bg_color"
-                type="color"
-                value={settings.chat_user_bg_color}
-                onChange={(e) => setSettings({ ...settings, chat_user_bg_color: e.target.value })}
-              />
-              <p className="text-xs text-muted-foreground">
-                Texto: {userBubbleTextColor} (ajustado automaticamente)
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="chat_ai_bg_color">Cor do Balão da IA</Label>
-              <Input
-                id="chat_ai_bg_color"
-                type="color"
-                value={settings.chat_ai_bg_color}
-                onChange={(e) => setSettings({ ...settings, chat_ai_bg_color: e.target.value })}
-              />
-              <p className="text-xs text-muted-foreground">
-                Texto: {aiBubbleTextColor} (ajustado automaticamente)
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Section C: Login Screen */}
+        {/* Section C: Login Screen - Simplified */}
         <Card>
           <CardHeader>
             <CardTitle>Tela de Login</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={useLoginImage}
-                onCheckedChange={setUseLoginImage}
+            <div className="space-y-2">
+              <Label>Imagem de Fundo</Label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "login_bg_url")}
+                disabled={uploading === "login_bg_url"}
               />
-              <Label>Usar imagem de fundo</Label>
+              {settings.login_bg_url && (
+                <p className="text-xs text-muted-foreground">
+                  Imagem atual carregada
+                </p>
+              )}
             </div>
-
-            {useLoginImage ? (
-              <div className="space-y-2">
-                <Label>Imagem de Fundo</Label>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "login_bg_url")}
-                  disabled={uploading === "login_bg_url"}
-                />
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <Label htmlFor="login_bg_color">Cor de Fundo</Label>
-                <Input
-                  id="login_bg_color"
-                  type="color"
-                  value={settings.login_bg_color || "#f3f4f6"}
-                  onChange={(e) => setSettings({ ...settings, login_bg_color: e.target.value })}
-                />
-              </div>
-            )}
 
             <div className="space-y-2">
               <Label htmlFor="login_headline">Mensagem de Boas-Vindas</Label>
@@ -556,21 +461,6 @@ export function DesignPlatform() {
           </CardContent>
         </Card>
 
-        {/* Section E: Quick Presets */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Temas Pré-definidos</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Button 
-              onClick={applyTKTheme} 
-              variant="outline" 
-              className="w-full"
-            >
-              Aplicar Tema TK Solution (Padrão)
-            </Button>
-          </CardContent>
-        </Card>
 
         <Button onClick={handleSave} disabled={saving} className="w-full">
           {saving ? (

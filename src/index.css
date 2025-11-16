@@ -10,10 +10,11 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Custom theme colors - can be overridden dynamically */
-    --primary: 210 100% 50%;
+    /* TK Solution Brand Colors - Hardcoded */
+    --primary: 0 0% 0%; /* Black */
     --secondary: 210 20% 96%;
-    --button: 210 100% 50%;
+    --button: 211 100% 30%; /* TK Blue #004C97 */
+    --button-hover: 211 100% 20%; /* Darker Blue #003366 */
     --font-family: 'Inter';
     
     --background: 0 0% 100%;
