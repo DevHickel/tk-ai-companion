@@ -282,7 +282,7 @@ export function AppSidebar() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 z-50 opacity-0 group-hover:opacity-100 transition-opacity bg-[#09090b] hover:bg-sidebar-accent text-zinc-400 hover:text-white"
+                                className="absolute right-4 top-1/2 -translate-y-1/2 h-8 w-8 z-50 opacity-0 group-hover:opacity-100 transition-opacity bg-[#09090b] hover:bg-zinc-800 text-zinc-400 hover:text-white"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
@@ -293,7 +293,7 @@ export function AppSidebar() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent 
                               align="end"
-                              className="dark:bg-[#17181b] dark:border-zinc-800 bg-white z-50"
+                              className="bg-white dark:bg-[#09090b] border-gray-200 dark:border-zinc-800 text-slate-900 dark:text-gray-200 z-50"
                             >
                               <DropdownMenuItem
                                 onClick={(e) => {
@@ -301,7 +301,7 @@ export function AppSidebar() {
                                   e.stopPropagation();
                                   togglePinConversation(conv.id, conv.pinned, e as any);
                                 }}
-                                className="cursor-pointer"
+                                className="cursor-pointer dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
                               >
                                 <Pin className={`h-4 w-4 mr-2 ${conv.pinned ? 'fill-current' : ''}`} />
                                 {conv.pinned ? 'Desafixar' : 'Fixar'}
@@ -312,19 +312,19 @@ export function AppSidebar() {
                                   e.stopPropagation();
                                   openRenameDialog(conv, e as any);
                                 }}
-                                className="cursor-pointer"
+                                className="cursor-pointer dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
                               >
                                 <Edit3 className="h-4 w-4 mr-2" />
                                 Renomear
                               </DropdownMenuItem>
-                              <DropdownMenuSeparator />
+                              <DropdownMenuSeparator className="dark:bg-zinc-800" />
                               <DropdownMenuItem
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
                                   openDeleteDialog(conv, e as any);
                                 }}
-                                className="cursor-pointer text-destructive focus:text-destructive"
+                                className="cursor-pointer text-destructive focus:text-destructive dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
                               >
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 Excluir
