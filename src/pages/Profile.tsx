@@ -162,9 +162,9 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle p-6">
+    <div className="min-h-screen dark:bg-[#17181b] bg-gradient-subtle p-6">
       <div className="max-w-2xl mx-auto space-y-6">
-        <Card className="shadow-soft">
+        <Card className="shadow-soft dark:bg-[#09090b] dark:border-zinc-800">
           <CardHeader>
             <CardTitle>Configurações do Perfil</CardTitle>
             <CardDescription>Gerencie as informações da sua conta</CardDescription>
@@ -204,7 +204,7 @@ export default function Profile() {
                   type="email"
                   value={user?.email || ""}
                   disabled
-                  className="bg-muted"
+                  className="bg-muted dark:bg-zinc-900/50"
                 />
               </div>
 
@@ -216,6 +216,7 @@ export default function Profile() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Digite seu nome completo"
+                  className="dark:bg-zinc-900/50"
                 />
               </div>
 
@@ -243,6 +244,7 @@ export default function Profile() {
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
                   minLength={6}
+                  className="dark:bg-zinc-900/50"
                 />
               </div>
               <div className="space-y-2">
@@ -255,6 +257,7 @@ export default function Profile() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   minLength={6}
+                  className="dark:bg-zinc-900/50"
                 />
               </div>
               <Button 
