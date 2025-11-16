@@ -114,8 +114,6 @@ export function DesignPlatform() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState<string | null>(null);
-  const [previewTheme, setPreviewTheme] = useState<"light" | "dark">("light");
-  const [useLoginImage, setUseLoginImage] = useState(false);
   const [useCustomFont, setUseCustomFont] = useState(false);
   
   const { toast } = useToast();
@@ -155,7 +153,6 @@ export function DesignPlatform() {
           custom_font_name: data.custom_font_name,
           logo_padding: data.logo_padding || 0,
         });
-        setUseLoginImage(!!data.login_bg_url);
         setUseCustomFont(!!data.custom_font_url);
       }
     } catch (error) {
@@ -280,19 +277,10 @@ export function DesignPlatform() {
     );
   }
 
-  const currentLogo = previewTheme === "light" ? settings.logo_light_url : settings.logo_dark_url;
-  const userBubbleTextColor = getContrastColor(settings.chat_user_bg_color);
-  const aiBubbleTextColor = getContrastColor(settings.chat_ai_bg_color);
-  
-  // Dark mode preview uses TK Solution specific hex colors
-  const previewSidebarBg = previewTheme === "dark" ? "#09090b" : settings.sidebar_bg_color;
-  const previewChatBg = previewTheme === "dark" ? "#17181b" : "#f9fafb";
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Left Column - Controls */}
-      <div className="space-y-6">
-        {/* Section A: Brand Identity */}
+    <div className="max-w-3xl mx-auto space-y-6">
+      {/* Brand Identity */}
         <Card>
           <CardHeader>
             <CardTitle>Identidade da Marca</CardTitle>
@@ -460,164 +448,16 @@ export function DesignPlatform() {
         </Card>
 
 
-        <Button onClick={handleSave} disabled={saving} className="w-full">
-          {saving ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Salvando...
-            </>
-          ) : (
-            "Salvar Configurações"
-          )}
-        </Button>
-      </div>
-
-      {/* Right Column - Live Preview */}
-      <div className="space-y-4">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Visualização ao Vivo</CardTitle>
-              <div className="flex items-center gap-2">
-                <Sun className="h-4 w-4" />
-                <Switch
-                  checked={previewTheme === "dark"}
-                  onCheckedChange={(checked) => setPreviewTheme(checked ? "dark" : "light")}
-                />
-                <Moon className="h-4 w-4" />
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="app" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="app">Interface do App</TabsTrigger>
-                <TabsTrigger value="login">Tela de Login</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="app" className="space-y-4">
-                <div 
-                  className={`border rounded-lg overflow-hidden ${previewTheme === "dark" ? "bg-gray-900" : "bg-white"}`}
-                  style={{ fontFamily: settings.font_family }}
-                >
-                  {/* Sidebar Preview */}
-                  <div className="flex h-[400px]">
-                    <div 
-                      className="w-16 flex flex-col items-center py-4 space-y-4"
-                      style={{ 
-                        backgroundColor: previewSidebarBg,
-                        padding: `${settings.logo_padding}px`
-                      }}
-                    >
-                      {currentLogo ? (
-                        <img 
-                          src={currentLogo} 
-                          alt="Logo" 
-                          className="h-8 w-8 object-contain"
-                          style={{
-                            padding: `${settings.logo_padding}px`
-                          }}
-                        />
-                      ) : (
-                        <div 
-                          className="h-8 w-8 rounded flex items-center justify-center text-white font-bold text-xs"
-                          style={{ 
-                            backgroundColor: settings.primary_color,
-                            borderRadius: `${settings.border_radius}px`,
-                            padding: `${settings.logo_padding}px`
-                          }}
-                        >
-                          T
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Chat Preview */}
-                    <div className="flex-1 p-4 space-y-3" style={{ backgroundColor: previewChatBg }}>
-                      <div className="flex justify-end">
-                        <div 
-                          className="max-w-[70%] px-4 py-2 text-sm"
-                          style={{ 
-                            backgroundColor: settings.chat_user_bg_color,
-                            color: userBubbleTextColor,
-                            borderRadius: `${settings.border_radius}px`
-                          }}
-                        >
-                          Mensagem do usuário
-                        </div>
-                      </div>
-                      <div className="flex justify-start">
-                        <div 
-                          className="max-w-[70%] px-4 py-2 text-sm"
-                          style={{ 
-                            backgroundColor: settings.chat_ai_bg_color,
-                            color: aiBubbleTextColor,
-                            borderRadius: `${settings.border_radius}px`
-                          }}
-                        >
-                          Resposta da IA
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="login" className="space-y-4">
-                <div 
-                  className="border rounded-lg overflow-hidden h-[400px] flex items-center justify-center p-8"
-                  style={{
-                    backgroundImage: useLoginImage && settings.login_bg_url ? `url(${settings.login_bg_url})` : undefined,
-                    backgroundColor: previewTheme === "dark" && !settings.login_bg_url ? "#09090b" : (!useLoginImage ? settings.login_bg_color || "#f3f4f6" : undefined),
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    fontFamily: settings.font_family,
-                  }}
-                >
-                  <div 
-                    className={`p-6 shadow-lg max-w-sm w-full ${previewTheme === "dark" ? "bg-zinc-900 border border-zinc-800" : "bg-white"}`}
-                    style={{ borderRadius: `${settings.border_radius}px` }}
-                  >
-                    <div className="text-center space-y-4">
-                      {currentLogo && (
-                        <img src={currentLogo} alt="Logo" className="h-12 mx-auto object-contain" />
-                      )}
-                      <h2 className={`text-2xl font-bold ${previewTheme === "dark" ? "text-white" : "text-gray-900"}`}>
-                        {settings.login_headline}
-                      </h2>
-                      <div className="space-y-2">
-                        <div 
-                          className={previewTheme === "dark" ? "h-10 bg-zinc-800 border border-zinc-700" : "h-10 bg-gray-100"}
-                          style={{ borderRadius: `${settings.border_radius}px` }}
-                        />
-                        <div 
-                          className={previewTheme === "dark" ? "h-10 bg-zinc-800 border border-zinc-700" : "h-10 bg-gray-100"}
-                          style={{ borderRadius: `${settings.border_radius}px` }}
-                        />
-                        <button
-                          className="w-full h-10 text-white font-medium transition-colors"
-                          style={{ 
-                            backgroundColor: settings.button_color || settings.primary_color,
-                            borderRadius: `${settings.border_radius}px`
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = settings.button_hover_color || settings.button_color || settings.primary_color;
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = settings.button_color || settings.primary_color;
-                          }}
-                        >
-                          Entrar
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-      </div>
+      <Button onClick={handleSave} disabled={saving} className="w-full">
+        {saving ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Salvando...
+          </>
+        ) : (
+          "Salvar Configurações"
+        )}
+      </Button>
     </div>
   );
 }
