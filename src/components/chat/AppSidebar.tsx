@@ -258,37 +258,36 @@ export function AppSidebar() {
                   conversations.map((conv) => (
                     <SidebarMenuItem key={conv.id} className="group/item">
                       {open ? (
-                        <div className="relative group w-full">
-                          {/* Main Link - The Chat */}
+                        <div className="group relative flex items-center w-full rounded-lg p-2 hover:bg-[#1f1f22] transition-colors cursor-pointer">
                           <NavLink 
                             to={`/chat?id=${conv.id}`} 
-                            className="flex items-center w-full p-2 pr-10 hover:bg-sidebar-accent rounded-md overflow-hidden"
+                            className="flex items-center flex-1 min-w-0"
+                            activeClassName="font-medium"
                           >
                             {conv.pinned ? (
-                              <Pin className="w-4 h-4 mr-2 shrink-0 fill-current text-primary" />
+                              <Pin className="h-4 w-4 mr-2 shrink-0 fill-current text-primary" />
                             ) : (
-                              <MessageSquare className="w-4 h-4 mr-2 shrink-0" />
+                              <MessageSquare className="h-4 w-4 mr-2 shrink-0 text-zinc-400" />
                             )}
                             
-                            {/* Text Container - Critical for truncation */}
-                            <span className="truncate text-sm flex-1 text-left">
+                            <span className="flex-1 truncate text-sm text-left pr-8">
                               {conv.title}
                             </span>
                           </NavLink>
                           
-                          {/* The Menu Trigger (Floating on top) */}
+                          {/* The Gemini Button */}
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="absolute right-4 top-1/2 -translate-y-1/2 h-6 w-5 z-50 opacity-0 group-hover:opacity-100 transition-all bg-transparent hover:bg-[#09090b] text-zinc-500 hover:text-zinc-200"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 z-50 opacity-0 group-hover:opacity-100 transition-all bg-transparent hover:bg-[#1f1f22] text-zinc-500 hover:text-zinc-200 rounded-md"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
                                 }}
                               >
-                                <MoreVertical className="h-3.5 w-3.5" />
+                                <MoreVertical className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent 
