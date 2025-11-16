@@ -80,9 +80,11 @@ export function BugManagement() {
 
   if (bugs.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">Nenhum bug reportado ainda.</p>
-      </div>
+      <Card className="dark:bg-[#09090b] dark:border-zinc-800">
+        <CardContent className="text-center py-12">
+          <p className="text-muted-foreground">Nenhum bug reportado ainda.</p>
+        </CardContent>
+      </Card>
     );
   }
 
