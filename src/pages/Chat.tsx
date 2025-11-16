@@ -259,7 +259,12 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div 
+      className="flex flex-col h-full overflow-hidden"
+      style={{
+        backgroundColor: document.documentElement.classList.contains('dark') ? '#18181b' : '#f9fafb'
+      }}
+    >
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto p-6">
           {messages.length === 0 ? (
