@@ -149,25 +149,27 @@ function AppRoutes() {
   );
 }
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <ThemeProvider>
-        <ThemeSettingsProvider>
-          <FontLoader />
-          <AuthProvider>
-            <UserProfileProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <AppRoutes />
-              </TooltipProvider>
-            </UserProfileProvider>
-          </AuthProvider>
-        </ThemeSettingsProvider>
-      </ThemeProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <ThemeProvider>
+          <ThemeSettingsProvider>
+            <FontLoader />
+            <AuthProvider>
+              <UserProfileProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <AppRoutes />
+                </TooltipProvider>
+              </UserProfileProvider>
+            </AuthProvider>
+          </ThemeSettingsProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+}
 
 export default App;
