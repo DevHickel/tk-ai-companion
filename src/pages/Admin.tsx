@@ -40,7 +40,7 @@ export default function Admin() {
       </div>
 
       <Tabs defaultValue="logs" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-4 dark:bg-[#09090b] dark:border dark:border-zinc-800">
           <TabsTrigger value="logs">Logs de Atividade</TabsTrigger>
           <TabsTrigger value="users">Gerenciar Usuários</TabsTrigger>
           <TabsTrigger value="design">Configurações do Tema</TabsTrigger>

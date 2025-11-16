@@ -85,7 +85,7 @@ export default function BugReport() {
     <div className="min-h-screen bg-gradient-subtle p-6">
       <div className="max-w-4xl mx-auto">
         <Tabs defaultValue="submit" className="w-full">
-          <TabsList className="grid w-full" style={{ gridTemplateColumns: isAdmin ? "1fr 1fr" : "1fr" }}>
+          <TabsList className="grid w-full dark:bg-[#09090b] dark:border dark:border-zinc-800" style={{ gridTemplateColumns: isAdmin ? "1fr 1fr" : "1fr" }}>
             <TabsTrigger value="submit" className="gap-2">
               <Bug className="h-4 w-4" />
               Enviar Report
@@ -99,7 +99,7 @@ export default function BugReport() {
           </TabsList>
 
           <TabsContent value="submit">
-            <Card className="shadow-soft">
+            <Card className="shadow-soft dark:bg-[#09090b] dark:border-zinc-800">
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <Bug className="h-6 w-6 text-primary" />
