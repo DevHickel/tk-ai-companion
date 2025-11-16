@@ -5,6 +5,7 @@ interface ThemeSettings {
   primary_color: string;
   secondary_color: string;
   button_color: string;
+  button_hover_color: string;
   font_family: string;
   logo_url: string | null;
   logo_dark_url: string | null;
@@ -22,6 +23,7 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
     primary_color: "#0ea5e9",
     secondary_color: "#8b5cf6",
     button_color: "#0ea5e9",
+    button_hover_color: "",
     font_family: "Inter",
     logo_url: null,
     logo_dark_url: null,
@@ -45,6 +47,7 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
           primary_color: data.primary_color || "#0ea5e9",
           secondary_color: (data as any).secondary_color || "#8b5cf6",
           button_color: (data as any).button_color || "#0ea5e9",
+          button_hover_color: (data as any).button_hover_color || "",
           font_family: data.font_family || "Inter",
           logo_url: data.logo_light_url || data.logo_url,
           logo_dark_url: data.logo_dark_url || null,
@@ -196,6 +199,22 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
       "--button",
       hexToHSL(buttonColor)
     );
+
+    // Apply button hover color (fallback to 10% darker if not set)
+    if (themeSettings.button_hover_color) {
+      document.documentElement.style.setProperty(
+        "--button-hover",
+        hexToHSL(themeSettings.button_hover_color)
+      );
+    } else {
+      // Calculate 10% darker shade
+      const baseHSL = hexToHSL(buttonColor);
+      const [h, s, l] = baseHSL.split(' ');
+      const lightness = parseInt(l);
+      const darkerLightness = Math.max(lightness - 10, 0);
+      const darkerHSL = `${h} ${s} ${darkerLightness}%`;
+      document.documentElement.style.setProperty("--button-hover", darkerHSL);
+    }
 
     // Apply font family
     document.documentElement.style.setProperty(
