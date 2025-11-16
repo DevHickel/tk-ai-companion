@@ -67,10 +67,13 @@ export default function Auth() {
     <div 
       className="min-h-screen flex items-center justify-center p-4 relative transition-colors"
       style={{
-        backgroundImage: settings.login_bg_url ? `url(${settings.login_bg_url})` : undefined,
-        backgroundColor: theme === 'dark' && !settings.login_bg_url ? '#09090b' : (settings.login_bg_color || '#f3f4f6'),
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        ...(settings.login_bg_url ? {
+          backgroundImage: `url(${settings.login_bg_url})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        } : {
+          backgroundColor: theme === 'dark' ? '#17181b' : '#f3f4f6',
+        }),
       }}
     >
       {/* Theme Toggle */}
