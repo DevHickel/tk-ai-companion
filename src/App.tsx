@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ThemeSettingsProvider } from "@/contexts/ThemeSettingsContext";
 import { UserProfileProvider, useUserProfile } from "@/contexts/UserProfileContext";
+import { FontLoader } from "@/components/FontLoader";
 import Auth from "./pages/Auth";
 import Chat from "./pages/Chat";
 import Profile from "./pages/Profile";
@@ -153,6 +154,7 @@ const App = () => (
     <BrowserRouter>
       <ThemeProvider>
         <ThemeSettingsProvider>
+          <FontLoader />
           <AuthProvider>
             <UserProfileProvider>
               <TooltipProvider>

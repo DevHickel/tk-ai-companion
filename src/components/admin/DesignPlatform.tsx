@@ -410,39 +410,19 @@ export function DesignPlatform() {
               />
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>Tipografia</Label>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={useCustomFont}
-                    onCheckedChange={setUseCustomFont}
-                  />
-                  <Label className="text-sm">Fonte Personalizada</Label>
-                </div>
-              </div>
-
-              {useCustomFont ? (
-                <div className="space-y-2">
-                  <Label>Upload de Fonte (.ttf, .otf, .woff2)</Label>
-                  <Input
-                    type="file"
-                    accept=".ttf,.otf,.woff2"
-                    onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "custom_font_url")}
-                    disabled={uploading === "custom_font_url"}
-                  />
-                  {settings.custom_font_name && (
-                    <p className="text-xs text-muted-foreground">
-                      Fonte atual: {settings.custom_font_name}
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-2">
+            <div className="space-y-4">
+              <Label>Tipografia</Label>
+              <Tabs value={useCustomFont ? "custom" : "standard"} onValueChange={(v) => setUseCustomFont(v === "custom")}>
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="standard">Fontes Padrão</TabsTrigger>
+                  <TabsTrigger value="custom">Fonte Personalizada</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="standard" className="space-y-2">
                   <Label htmlFor="font_family">Família de Fonte</Label>
                   <Select
                     value={settings.font_family}
-                    onValueChange={(value) => setSettings({ ...settings, font_family: value })}
+                    onValueChange={(value) => setSettings({ ...settings, font_family: value, custom_font_url: null, custom_font_name: null })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -455,8 +435,26 @@ export function DesignPlatform() {
                       ))}
                     </SelectContent>
                   </Select>
-                </div>
-              )}
+                </TabsContent>
+                
+                <TabsContent value="custom" className="space-y-2">
+                  <Label>Upload de Fonte (.ttf, .otf, .woff2)</Label>
+                  <Input
+                    type="file"
+                    accept=".ttf,.otf,.woff2"
+                    onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "custom_font_url")}
+                    disabled={uploading === "custom_font_url"}
+                  />
+                  {settings.custom_font_name && (
+                    <p className="text-xs text-muted-foreground">
+                      Fonte atual: {settings.custom_font_name}
+                    </p>
+                  )}
+                  <p className="text-xs text-muted-foreground">
+                    A fonte será aplicada globalmente para todos os usuários.
+                  </p>
+                </TabsContent>
+              </Tabs>
             </div>
           </CardContent>
         </Card>
