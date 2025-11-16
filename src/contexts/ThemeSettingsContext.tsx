@@ -9,6 +9,8 @@ interface ThemeSettings {
   font_family: string;
   logo_url: string | null;
   logo_dark_url: string | null;
+  login_bg_color: string | null;
+  login_bg_url: string | null;
 }
 
 interface ThemeSettingsContextType {
@@ -27,6 +29,8 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
     font_family: "Inter",
     logo_url: null,
     logo_dark_url: null,
+    login_bg_color: null,
+    login_bg_url: null,
   });
 
   async function loadSettings() {
@@ -51,6 +55,8 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
           font_family: data.font_family || "Inter",
           logo_url: data.logo_light_url || data.logo_url,
           logo_dark_url: data.logo_dark_url || null,
+          login_bg_color: (data as any).login_bg_color || null,
+          login_bg_url: (data as any).login_bg_url || null,
         };
         
         setSettings(newSettings);
