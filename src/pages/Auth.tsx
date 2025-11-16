@@ -67,7 +67,7 @@ export default function Auth() {
     <div 
       className="min-h-screen flex items-center justify-center p-4 relative transition-colors"
       style={{
-        backgroundColor: settings.login_bg_color || (theme === 'dark' ? '#1a1a1a' : '#f3f4f6'),
+        backgroundColor: settings.login_bg_color || (theme === 'dark' ? '#09090b' : '#f3f4f6'),
         backgroundImage: settings.login_bg_url ? `url(${settings.login_bg_url})` : undefined,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -88,7 +88,7 @@ export default function Auth() {
         )}
       </Button>
 
-      <Card className="w-full max-w-md shadow-lg">
+      <Card className="w-full max-w-md shadow-lg bg-card text-card-foreground border-border">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
             {settings.logo_url || settings.logo_dark_url ? (
