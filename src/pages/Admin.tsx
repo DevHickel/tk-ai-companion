@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ActivityLogs } from "@/components/admin/ActivityLogs";
 import { UserManagement } from "@/components/admin/UserManagement";
-import { WhitelabelSettings } from "@/components/admin/WhitelabelSettings";
 import { DocumentManagement } from "@/components/admin/DocumentManagement";
 import { DesignPlatform } from "@/components/admin/DesignPlatform";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -41,11 +40,10 @@ export default function Admin() {
       </div>
 
       <Tabs defaultValue="logs" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="logs">Logs de Atividade</TabsTrigger>
           <TabsTrigger value="users">Gerenciar Usuários</TabsTrigger>
-          <TabsTrigger value="whitelabel">White Label</TabsTrigger>
-          <TabsTrigger value="design">Design Plataforma</TabsTrigger>
+          <TabsTrigger value="design">Configurações do Tema</TabsTrigger>
           <TabsTrigger value="documents">Gestão de Documentos</TabsTrigger>
         </TabsList>
 
@@ -55,10 +53,6 @@ export default function Admin() {
 
         <TabsContent value="users" className="mt-6">
           <UserManagement />
-        </TabsContent>
-
-        <TabsContent value="whitelabel" className="mt-6">
-          <WhitelabelSettings />
         </TabsContent>
 
         <TabsContent value="design" className="mt-6">
