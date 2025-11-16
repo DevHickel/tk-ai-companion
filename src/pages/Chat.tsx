@@ -264,9 +264,13 @@ export default function Chat() {
         <div className="max-w-4xl mx-auto p-6">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center text-center py-20">
-              {settings.logo_url ? (
+              {settings.logo_url || settings.logo_dark_url ? (
                 <img 
-                  src={settings.logo_url} 
+                  src={
+                    document.documentElement.classList.contains('dark') && settings.logo_dark_url
+                      ? settings.logo_dark_url
+                      : settings.logo_url || settings.logo_dark_url || ''
+                  }
                   alt="Logo" 
                   className="h-20 w-20 mb-6 object-contain"
                 />
