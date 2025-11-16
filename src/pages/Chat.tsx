@@ -262,7 +262,7 @@ export default function Chat() {
     <div 
       className="flex flex-col h-full overflow-hidden"
       style={{
-        backgroundColor: document.documentElement.classList.contains('dark') ? '#808080' : '#f9fafb'
+        backgroundColor: document.documentElement.classList.contains('dark') ? '#17181b' : '#f9fafb'
       }}
     >
       <div className="flex-1 overflow-y-auto">
