@@ -542,28 +542,30 @@ export function DesignPlatform() {
                   className="border rounded-lg overflow-hidden h-[400px] flex items-center justify-center p-8"
                   style={{
                     backgroundImage: useLoginImage && settings.login_bg_url ? `url(${settings.login_bg_url})` : undefined,
-                    backgroundColor: !useLoginImage ? settings.login_bg_color || "#f3f4f6" : undefined,
+                    backgroundColor: previewTheme === "dark" && !settings.login_bg_url ? "#09090b" : (!useLoginImage ? settings.login_bg_color || "#f3f4f6" : undefined),
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     fontFamily: settings.font_family,
                   }}
                 >
                   <div 
-                    className="bg-white p-6 shadow-lg max-w-sm w-full"
+                    className={`p-6 shadow-lg max-w-sm w-full ${previewTheme === "dark" ? "bg-zinc-900 border border-zinc-800" : "bg-white"}`}
                     style={{ borderRadius: `${settings.border_radius}px` }}
                   >
                     <div className="text-center space-y-4">
                       {currentLogo && (
                         <img src={currentLogo} alt="Logo" className="h-12 mx-auto object-contain" />
                       )}
-                      <h2 className="text-2xl font-bold">{settings.login_headline}</h2>
+                      <h2 className={`text-2xl font-bold ${previewTheme === "dark" ? "text-white" : "text-gray-900"}`}>
+                        {settings.login_headline}
+                      </h2>
                       <div className="space-y-2">
                         <div 
-                          className="h-10 bg-gray-100"
+                          className={previewTheme === "dark" ? "h-10 bg-zinc-800 border border-zinc-700" : "h-10 bg-gray-100"}
                           style={{ borderRadius: `${settings.border_radius}px` }}
                         />
                         <div 
-                          className="h-10 bg-gray-100"
+                          className={previewTheme === "dark" ? "h-10 bg-zinc-800 border border-zinc-700" : "h-10 bg-gray-100"}
                           style={{ borderRadius: `${settings.border_radius}px` }}
                         />
                         <button
