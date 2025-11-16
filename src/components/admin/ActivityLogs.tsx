@@ -125,17 +125,17 @@ export function ActivityLogs() {
               placeholder="Buscar por usuário ou ação..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 focus-visible:ring-gray-500"
+              className="bg-white text-slate-900 border-slate-200 placeholder:text-slate-400 dark:bg-zinc-900 dark:text-slate-50 dark:border-zinc-800"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="action">Ação</Label>
             <Select value={actionFilter} onValueChange={setActionFilter}>
-              <SelectTrigger id="action" className="bg-gray-800 border-gray-600 text-white focus:ring-gray-500">
+              <SelectTrigger id="action" className="bg-white text-slate-900 border-slate-200 dark:bg-zinc-900 dark:text-slate-50 dark:border-zinc-800">
                 <SelectValue placeholder="Todas as ações" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-800 border-gray-600">
+              <SelectContent className="bg-white border-slate-200 dark:bg-zinc-900 dark:border-zinc-800">
                 <SelectItem value="all">Todas as ações</SelectItem>
                 {uniqueActions.map((action) => (
                   <SelectItem key={action} value={action}>
@@ -153,7 +153,7 @@ export function ActivityLogs() {
               type="date"
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="bg-gray-800 border-gray-600 text-white focus-visible:ring-gray-500"
+              className="bg-white text-slate-900 border-slate-200 dark:bg-zinc-900 dark:text-slate-50 dark:border-zinc-800"
             />
           </div>
         </div>
@@ -194,7 +194,7 @@ export function ActivityLogs() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                      <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-500/30">
                         {translateAction(log.action)}
                       </span>
                     </TableCell>
