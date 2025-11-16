@@ -189,7 +189,7 @@ export function DocumentManagement() {
   return (
     <div className="space-y-6">
       {/* Upload Section */}
-      <Card>
+      <Card className="dark:bg-[#09090b] dark:border-zinc-800">
         <CardHeader>
           <CardTitle>Upload de Documento</CardTitle>
           <CardDescription>
@@ -253,7 +253,7 @@ export function DocumentManagement() {
       </Card>
 
       {/* Documents List Section */}
-      <Card>
+      <Card className="dark:bg-[#09090b] dark:border-zinc-800">
         <CardHeader>
           <CardTitle>Documentos Processados</CardTitle>
           <CardDescription>

@@ -89,7 +89,7 @@ export function BugManagement() {
   return (
     <div className="space-y-4">
       {bugs.map((bug) => (
-        <Card key={bug.id}>
+        <Card key={bug.id} className="dark:bg-[#09090b] dark:border-zinc-800">
           <CardHeader>
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2">

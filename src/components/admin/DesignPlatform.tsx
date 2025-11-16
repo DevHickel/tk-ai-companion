@@ -281,7 +281,7 @@ export function DesignPlatform() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Brand Identity */}
-        <Card>
+        <Card className="dark:bg-[#09090b] dark:border-zinc-800">
           <CardHeader>
             <CardTitle>Identidade da Marca</CardTitle>
           </CardHeader>
@@ -338,7 +338,7 @@ export function DesignPlatform() {
         </Card>
 
         {/* Section C: Login Screen - Simplified */}
-        <Card>
+        <Card className="dark:bg-[#09090b] dark:border-zinc-800">
           <CardHeader>
             <CardTitle>Tela de Login</CardTitle>
           </CardHeader>
@@ -371,7 +371,7 @@ export function DesignPlatform() {
         </Card>
 
         {/* Section D: Typography */}
-        <Card>
+        <Card className="dark:bg-[#09090b] dark:border-zinc-800">
           <CardHeader>
             <CardTitle>Fonte</CardTitle>
           </CardHeader>
