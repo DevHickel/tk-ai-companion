@@ -170,9 +170,13 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className={`p-4 border-b ${!open ? "p-2" : ""}`}>
         <div className={`flex items-center gap-2 ${!open ? "justify-center" : ""}`}>
-          {settings.logo_url ? (
+          {settings.logo_url || settings.logo_dark_url ? (
             <img 
-              src={settings.logo_url} 
+              src={
+                theme === 'dark' && settings.logo_dark_url
+                  ? settings.logo_dark_url
+                  : settings.logo_url || settings.logo_dark_url || ''
+              }
               alt="Logo" 
               className="h-8 w-8 object-contain rounded-lg flex-shrink-0"
             />

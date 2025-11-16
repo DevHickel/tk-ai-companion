@@ -7,6 +7,7 @@ interface ThemeSettings {
   button_color: string;
   font_family: string;
   logo_url: string | null;
+  logo_dark_url: string | null;
 }
 
 interface ThemeSettingsContextType {
@@ -23,6 +24,7 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
     button_color: "#0ea5e9",
     font_family: "Inter",
     logo_url: null,
+    logo_dark_url: null,
   });
 
   async function loadSettings() {
@@ -45,6 +47,7 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
           button_color: (data as any).button_color || "#0ea5e9",
           font_family: data.font_family || "Inter",
           logo_url: data.logo_light_url || data.logo_url,
+          logo_dark_url: data.logo_dark_url || null,
         };
         
         setSettings(newSettings);
