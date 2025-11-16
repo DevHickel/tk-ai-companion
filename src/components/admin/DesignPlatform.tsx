@@ -26,6 +26,9 @@ interface DesignSettings {
   login_headline: string;
   border_radius: number;
   font_family: string;
+  custom_font_url: string | null;
+  custom_font_name: string | null;
+  logo_padding: number;
 }
 
 const fontOptions = [
@@ -99,6 +102,9 @@ export function DesignPlatform() {
     login_headline: "Bem-vindo à Plataforma",
     border_radius: 8,
     font_family: "Inter",
+    custom_font_url: null,
+    custom_font_name: null,
+    logo_padding: 0,
   });
   
   const [loading, setLoading] = useState(true);
@@ -106,6 +112,7 @@ export function DesignPlatform() {
   const [uploading, setUploading] = useState<string | null>(null);
   const [previewTheme, setPreviewTheme] = useState<"light" | "dark">("light");
   const [useLoginImage, setUseLoginImage] = useState(false);
+  const [useCustomFont, setUseCustomFont] = useState(false);
   
   const { toast } = useToast();
   const { user } = useAuth();
@@ -138,8 +145,12 @@ export function DesignPlatform() {
           login_headline: data.login_headline || "Bem-vindo à Plataforma",
           border_radius: data.border_radius || 8,
           font_family: data.font_family || "Inter",
+          custom_font_url: data.custom_font_url,
+          custom_font_name: data.custom_font_name,
+          logo_padding: data.logo_padding || 0,
         });
         setUseLoginImage(!!data.login_bg_url);
+        setUseCustomFont(!!data.custom_font_url);
       }
     } catch (error) {
       console.error("Error fetching settings:", error);
@@ -155,17 +166,27 @@ export function DesignPlatform() {
     try {
       const fileExt = file.name.split(".").pop();
       const fileName = `${type}-${Date.now()}.${fileExt}`;
+      const bucket = type === "custom_font_url" ? "fonts" : "platform_assets";
+      
       const { error: uploadError, data } = await supabase.storage
-        .from("platform_assets")
+        .from(bucket)
         .upload(fileName, file);
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
-        .from("platform_assets")
+        .from(bucket)
         .getPublicUrl(fileName);
 
-      setSettings((prev) => ({ ...prev, [type]: publicUrl }));
+      if (type === "custom_font_url") {
+        setSettings((prev) => ({ 
+          ...prev, 
+          custom_font_url: publicUrl,
+          custom_font_name: file.name.split('.')[0]
+        }));
+      } else {
+        setSettings((prev) => ({ ...prev, [type]: publicUrl }));
+      }
 
       toast({
         title: "Upload concluído",
@@ -180,6 +201,21 @@ export function DesignPlatform() {
     } finally {
       setUploading(null);
     }
+  }
+
+  function applyTKTheme() {
+    setSettings((prev) => ({
+      ...prev,
+      primary_color: "#004C97",
+      sidebar_bg_color: "#F0F0F0",
+      chat_user_bg_color: "#004C97",
+      chat_ai_bg_color: "#F0F0F0",
+    }));
+    
+    toast({
+      title: "Tema TK Solution aplicado",
+      description: "As cores foram atualizadas de acordo com o manual corporativo",
+    });
   }
 
   async function handleSave() {
@@ -425,23 +461,80 @@ export function DesignPlatform() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="font_family">Família de Fonte</Label>
-              <Select
-                value={settings.font_family}
-                onValueChange={(value) => setSettings({ ...settings, font_family: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {fontOptions.map((font) => (
-                    <SelectItem key={font.value} value={font.value}>
-                      {font.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label>Espaçamento do Logo (Padding): {settings.logo_padding}px</Label>
+              <Slider
+                value={[settings.logo_padding]}
+                onValueChange={(value) => setSettings({ ...settings, logo_padding: value[0] })}
+                min={0}
+                max={48}
+                step={4}
+              />
             </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Tipografia</Label>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    checked={useCustomFont}
+                    onCheckedChange={setUseCustomFont}
+                  />
+                  <Label className="text-sm">Fonte Personalizada</Label>
+                </div>
+              </div>
+
+              {useCustomFont ? (
+                <div className="space-y-2">
+                  <Label>Upload de Fonte (.ttf, .otf, .woff2)</Label>
+                  <Input
+                    type="file"
+                    accept=".ttf,.otf,.woff2"
+                    onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "custom_font_url")}
+                    disabled={uploading === "custom_font_url"}
+                  />
+                  {settings.custom_font_name && (
+                    <p className="text-xs text-muted-foreground">
+                      Fonte atual: {settings.custom_font_name}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label htmlFor="font_family">Família de Fonte</Label>
+                  <Select
+                    value={settings.font_family}
+                    onValueChange={(value) => setSettings({ ...settings, font_family: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {fontOptions.map((font) => (
+                        <SelectItem key={font.value} value={font.value}>
+                          {font.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Section E: Quick Presets */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Temas Pré-definidos</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Button 
+              onClick={applyTKTheme} 
+              variant="outline" 
+              className="w-full"
+            >
+              Aplicar Tema TK Solution (Padrão)
+            </Button>
           </CardContent>
         </Card>
 
@@ -489,16 +582,27 @@ export function DesignPlatform() {
                   <div className="flex h-[400px]">
                     <div 
                       className="w-16 flex flex-col items-center py-4 space-y-4"
-                      style={{ backgroundColor: previewSidebarBg }}
+                      style={{ 
+                        backgroundColor: previewSidebarBg,
+                        padding: `${settings.logo_padding}px`
+                      }}
                     >
                       {currentLogo ? (
-                        <img src={currentLogo} alt="Logo" className="h-8 w-8 object-contain" />
+                        <img 
+                          src={currentLogo} 
+                          alt="Logo" 
+                          className="h-8 w-8 object-contain"
+                          style={{
+                            padding: `${settings.logo_padding}px`
+                          }}
+                        />
                       ) : (
                         <div 
                           className="h-8 w-8 rounded flex items-center justify-center text-white font-bold text-xs"
                           style={{ 
                             backgroundColor: settings.primary_color,
-                            borderRadius: `${settings.border_radius}px` 
+                            borderRadius: `${settings.border_radius}px`,
+                            padding: `${settings.logo_padding}px`
                           }}
                         >
                           T

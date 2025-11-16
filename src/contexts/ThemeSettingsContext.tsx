@@ -70,6 +70,40 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
   }
 
   function applyTheme(themeSettings: ThemeSettings) {
+    // Apply custom font if available
+    if ((themeSettings as any).custom_font_url && (themeSettings as any).custom_font_name) {
+      const fontName = (themeSettings as any).custom_font_name;
+      const fontUrl = (themeSettings as any).custom_font_url;
+      
+      // Remove existing custom font style if any
+      const existingStyle = document.getElementById('custom-font-face');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+      
+      // Create new @font-face rule
+      const style = document.createElement('style');
+      style.id = 'custom-font-face';
+      style.textContent = `
+        @font-face {
+          font-family: '${fontName}';
+          src: url('${fontUrl}') format('woff2'),
+               url('${fontUrl}') format('truetype'),
+               url('${fontUrl}') format('opentype');
+          font-weight: normal;
+          font-style: normal;
+          font-display: swap;
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // Apply the custom font to body
+      document.documentElement.style.setProperty('--font-sans', `'${fontName}', sans-serif`);
+    } else {
+      // Apply standard font
+      document.documentElement.style.setProperty('--font-sans', `'${themeSettings.font_family}', sans-serif`);
+    }
+
     // Apply primary color as background
     const primaryHSL = hexToHSL(themeSettings.primary_color);
     const [h, s, l] = primaryHSL.split(' ');
