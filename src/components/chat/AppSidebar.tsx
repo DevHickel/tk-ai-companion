@@ -138,7 +138,6 @@ export function AppSidebar() {
 
   const openDeleteDialog = (conv: Conversation, e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();
     setSelectedConversation(conv);
     setDeleteDialogOpen(true);
   };
@@ -163,7 +162,6 @@ export function AppSidebar() {
 
   const togglePinConversation = async (id: string, currentPinned: boolean, e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();
 
     await supabase
       .from('conversations')
@@ -173,7 +171,6 @@ export function AppSidebar() {
 
   const openRenameDialog = (conv: Conversation, e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();
     setSelectedConversation(conv);
     setNewTitle(conv.title);
     setRenameDialogOpen(true);
@@ -295,9 +292,8 @@ export function AppSidebar() {
                               className="bg-white dark:bg-[#09090b] border-gray-200 dark:border-zinc-800 text-slate-900 dark:text-gray-200 z-50"
                             >
                               <DropdownMenuItem
-                                onClick={(e) => {
+                                onSelect={(e) => {
                                   e.preventDefault();
-                                  e.stopPropagation();
                                   togglePinConversation(conv.id, conv.pinned, e as any);
                                 }}
                                 className="cursor-pointer dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
@@ -306,9 +302,8 @@ export function AppSidebar() {
                                 {conv.pinned ? 'Desafixar' : 'Fixar'}
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                onClick={(e) => {
+                                onSelect={(e) => {
                                   e.preventDefault();
-                                  e.stopPropagation();
                                   openRenameDialog(conv, e as any);
                                 }}
                                 className="cursor-pointer dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
@@ -318,9 +313,8 @@ export function AppSidebar() {
                               </DropdownMenuItem>
                               <DropdownMenuSeparator className="dark:bg-zinc-800" />
                               <DropdownMenuItem
-                                onClick={(e) => {
+                                onSelect={(e) => {
                                   e.preventDefault();
-                                  e.stopPropagation();
                                   openDeleteDialog(conv, e as any);
                                 }}
                                 className="cursor-pointer text-destructive focus:text-destructive dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
