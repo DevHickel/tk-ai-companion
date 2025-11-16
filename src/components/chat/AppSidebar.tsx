@@ -169,11 +169,12 @@ export function AppSidebar() {
   return (
     <Sidebar 
       collapsible="icon"
+      className="dark:!bg-[#09090b] dark:border-r dark:border-[#1f1f22]"
       style={{
         backgroundColor: theme === 'dark' ? '#09090b' : (settings.sidebar_bg_color || '#ffffff')
       }}
     >
-      <SidebarHeader className={`p-4 border-b ${!open ? "p-2" : ""}`}>
+      <SidebarHeader className="p-4 border-b bg-transparent dark:border-[#1f1f22]">
         <div className={`flex items-center gap-2 ${!open ? "justify-center" : ""}`}>
           {settings.logo_url || settings.logo_dark_url ? (
             <img 
@@ -279,7 +280,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className={`p-4 border-t ${!open ? "p-2" : ""}`}>
+      <SidebarFooter className="p-4 border-t bg-transparent dark:border-[#1f1f22]">
         <SidebarMenu className="space-y-1">
           {footerItems.map((item) => (
             <SidebarMenuItem key={item.title}>
