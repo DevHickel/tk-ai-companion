@@ -257,28 +257,26 @@ export function AppSidebar() {
                 ) : (
                   conversations.map((conv) => (
                     <SidebarMenuItem key={conv.id} className="group/item">
-                      <div className="flex items-center gap-1 w-full">
-                        <SidebarMenuButton asChild className="flex-1">
+                      {open ? (
+                        <div className="group flex items-center justify-between w-full gap-2">
                           <NavLink 
                             to={`/chat?id=${conv.id}`} 
-                            className={`flex items-center gap-2 ${!open ? "justify-center" : ""}`}
+                            className="flex items-center gap-2 flex-1 min-w-0 hover:bg-sidebar-accent px-2 py-1.5 rounded-md"
                           >
-                            {conv.pinned && open ? (
+                            {conv.pinned ? (
                               <Pin className="h-4 w-4 flex-shrink-0 fill-current text-primary" />
                             ) : (
                               <MessageSquare className="h-4 w-4 flex-shrink-0" />
                             )}
-                            {open && <span className="flex-1 min-w-0 truncate">{conv.title}</span>}
+                            <span className="flex-1 truncate text-left text-sm">{conv.title}</span>
                           </NavLink>
-                        </SidebarMenuButton>
-                        
-                        {open && (
+                          
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 opacity-0 group-hover/item:opacity-100 transition-opacity flex-shrink-0"
+                                className="h-8 w-8 shrink-0 opacity-0 group-hover/item:opacity-100 transition-opacity hover:bg-sidebar-accent"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
@@ -289,7 +287,7 @@ export function AppSidebar() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent 
                               align="end"
-                              className="dark:bg-[#17181b] dark:border-zinc-800"
+                              className="dark:bg-[#17181b] dark:border-zinc-800 bg-white z-50"
                             >
                               <DropdownMenuItem
                                 onClick={(e) => {
@@ -327,8 +325,21 @@ export function AppSidebar() {
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
-                        )}
-                      </div>
+                        </div>
+                      ) : (
+                        <SidebarMenuButton asChild>
+                          <NavLink 
+                            to={`/chat?id=${conv.id}`} 
+                            className="flex items-center justify-center"
+                          >
+                            {conv.pinned ? (
+                              <Pin className="h-4 w-4 fill-current text-primary" />
+                            ) : (
+                              <MessageSquare className="h-4 w-4" />
+                            )}
+                          </NavLink>
+                        </SidebarMenuButton>
+                      )}
                     </SidebarMenuItem>
                   ))
                 )}
