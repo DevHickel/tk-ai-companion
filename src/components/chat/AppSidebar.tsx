@@ -87,6 +87,7 @@ export function AppSidebar() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newTitle, setNewTitle] = useState("");
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const { settings } = useThemeSettings();
   const { profile } = useUserProfile();
   
@@ -136,10 +137,10 @@ export function AppSidebar() {
     }
   };
 
-  const openDeleteDialog = (conv: Conversation, e: React.MouseEvent) => {
-    e.preventDefault();
+  const openDeleteDialog = (conv: Conversation) => {
     setSelectedConversation(conv);
     setDeleteDialogOpen(true);
+    setOpenMenuId(null);
   };
 
   const confirmDelete = async () => {
@@ -160,20 +161,20 @@ export function AppSidebar() {
     }
   };
 
-  const togglePinConversation = async (id: string, currentPinned: boolean, e: React.MouseEvent) => {
-    e.preventDefault();
-
+  const togglePinConversation = async (id: string, currentPinned: boolean) => {
     await supabase
       .from('conversations')
       .update({ pinned: !currentPinned })
       .eq('id', id);
+    
+    setOpenMenuId(null);
   };
 
-  const openRenameDialog = (conv: Conversation, e: React.MouseEvent) => {
-    e.preventDefault();
+  const openRenameDialog = (conv: Conversation) => {
     setSelectedConversation(conv);
     setNewTitle(conv.title);
     setRenameDialogOpen(true);
+    setOpenMenuId(null);
   };
 
   const handleRename = async () => {
@@ -272,13 +273,16 @@ export function AppSidebar() {
                             </span>
                           </NavLink>
                           
-                          {/* The Gemini Button */}
-                          <DropdownMenu>
+                          {/* The Gemini Button - Controlled & Hidden by default */}
+                          <DropdownMenu 
+                            open={openMenuId === conv.id} 
+                            onOpenChange={(open) => setOpenMenuId(open ? conv.id : null)}
+                          >
                             <DropdownMenuTrigger asChild>
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 z-50 opacity-0 group-hover:opacity-100 transition-all bg-transparent hover:bg-[#1f1f22] text-zinc-500 hover:text-zinc-200 rounded-md"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 z-50 hidden group-hover:flex items-center justify-center bg-transparent hover:bg-[#1f1f22] text-zinc-500 hover:text-zinc-200 rounded-md"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   e.stopPropagation();
@@ -292,9 +296,8 @@ export function AppSidebar() {
                               className="bg-white dark:bg-[#09090b] border-gray-200 dark:border-zinc-800 text-slate-900 dark:text-gray-200 z-50"
                             >
                               <DropdownMenuItem
-                                onSelect={(e) => {
-                                  e.preventDefault();
-                                  togglePinConversation(conv.id, conv.pinned, e as any);
+                                onSelect={() => {
+                                  togglePinConversation(conv.id, conv.pinned);
                                 }}
                                 className="cursor-pointer dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
                               >
@@ -302,9 +305,8 @@ export function AppSidebar() {
                                 {conv.pinned ? 'Desafixar' : 'Fixar'}
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                onSelect={(e) => {
-                                  e.preventDefault();
-                                  openRenameDialog(conv, e as any);
+                                onSelect={() => {
+                                  openRenameDialog(conv);
                                 }}
                                 className="cursor-pointer dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
                               >
@@ -313,9 +315,8 @@ export function AppSidebar() {
                               </DropdownMenuItem>
                               <DropdownMenuSeparator className="dark:bg-zinc-800" />
                               <DropdownMenuItem
-                                onSelect={(e) => {
-                                  e.preventDefault();
-                                  openDeleteDialog(conv, e as any);
+                                onSelect={() => {
+                                  openDeleteDialog(conv);
                                 }}
                                 className="cursor-pointer text-destructive focus:text-destructive dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
                               >
