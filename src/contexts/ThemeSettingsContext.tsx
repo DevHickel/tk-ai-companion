@@ -12,6 +12,8 @@ interface ThemeSettings {
   login_bg_color: string | null;
   login_bg_url: string | null;
   sidebar_bg_color: string;
+  custom_font_url: string | null;
+  custom_font_name: string | null;
 }
 
 interface ThemeSettingsContextType {
@@ -33,6 +35,8 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
     login_bg_color: null,
     login_bg_url: null,
     sidebar_bg_color: "#ffffff",
+    custom_font_url: null,
+    custom_font_name: null,
   });
 
   async function loadSettings() {
@@ -60,6 +64,8 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
           login_bg_color: (data as any).login_bg_color || null,
           login_bg_url: (data as any).login_bg_url || null,
           sidebar_bg_color: (data as any).sidebar_bg_color || "#ffffff",
+          custom_font_url: (data as any).custom_font_url || null,
+          custom_font_name: (data as any).custom_font_name || null,
         };
         
         setSettings(newSettings);
