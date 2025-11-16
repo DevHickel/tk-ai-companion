@@ -109,7 +109,7 @@ export function ActivityLogs() {
   }
 
   return (
-    <Card>
+    <Card className="dark:bg-[#09090b] dark:border-zinc-800">
       <CardHeader>
         <CardTitle>Logs de Atividade</CardTitle>
         <CardDescription>

@@ -199,7 +199,7 @@ export function UserManagement() {
   }
 
   return (
-    <Card>
+    <Card className="dark:bg-[#09090b] dark:border-zinc-800">
       <CardHeader>
         <CardTitle>Gerenciar Usuários</CardTitle>
         <CardDescription>
