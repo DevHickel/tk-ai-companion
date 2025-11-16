@@ -27,7 +27,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="border-t bg-background p-4">
+    <form onSubmit={handleSubmit} className="border-t dark:border-[#17181b] bg-background dark:bg-[#17181b] p-4">
       <div className="flex gap-2 max-w-4xl mx-auto">
         <Textarea
           value={input}
