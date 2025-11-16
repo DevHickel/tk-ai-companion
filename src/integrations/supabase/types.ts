@@ -149,6 +149,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_pinned: boolean | null
           pinned: boolean
           title: string
           updated_at: string
@@ -157,6 +158,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_pinned?: boolean | null
           pinned?: boolean
           title?: string
           updated_at?: string
@@ -165,6 +167,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_pinned?: boolean | null
           pinned?: boolean
           title?: string
           updated_at?: string
@@ -199,6 +202,7 @@ export type Database = {
           conversation_id: string
           created_at: string
           id: string
+          is_pinned: boolean | null
           role: string
         }
         Insert: {
@@ -206,6 +210,7 @@ export type Database = {
           conversation_id: string
           created_at?: string
           id?: string
+          is_pinned?: boolean | null
           role: string
         }
         Update: {
@@ -213,6 +218,7 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           id?: string
+          is_pinned?: boolean | null
           role?: string
         }
         Relationships: [
