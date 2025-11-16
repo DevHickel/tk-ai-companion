@@ -64,7 +64,15 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center gradient-subtle p-4 relative">
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 relative transition-colors"
+      style={{
+        backgroundColor: settings.login_bg_color || (theme === 'dark' ? '#1a1a1a' : '#f3f4f6'),
+        backgroundImage: settings.login_bg_url ? `url(${settings.login_bg_url})` : undefined,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       {/* Theme Toggle */}
       <Button
         variant="ghost"
@@ -83,9 +91,13 @@ export default function Auth() {
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
-            {settings.logo_url ? (
+            {settings.logo_url || settings.logo_dark_url ? (
               <img 
-                src={settings.logo_url} 
+                src={
+                  theme === 'dark' && settings.logo_dark_url
+                    ? settings.logo_dark_url
+                    : settings.logo_url || settings.logo_dark_url || ''
+                }
                 alt="Logo" 
                 className="h-16 object-contain max-w-[200px]"
               />
@@ -127,7 +139,7 @@ export default function Auth() {
                 minLength={6}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full text-white" disabled={loading}>
               {loading ? "Carregando..." : "Entrar"}
             </Button>
           </form>
