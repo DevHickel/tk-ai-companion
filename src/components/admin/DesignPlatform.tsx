@@ -18,6 +18,8 @@ interface DesignSettings {
   logo_light_url: string | null;
   logo_dark_url: string | null;
   primary_color: string;
+  button_color: string;
+  button_hover_color: string;
   sidebar_bg_color: string;
   chat_user_bg_color: string;
   chat_ai_bg_color: string;
@@ -94,6 +96,8 @@ export function DesignPlatform() {
     logo_light_url: null,
     logo_dark_url: null,
     primary_color: "#0ea5e9",
+    button_color: "#0ea5e9",
+    button_hover_color: "",
     sidebar_bg_color: "#1a1a1a",
     chat_user_bg_color: "#0ea5e9",
     chat_ai_bg_color: "#374151",
@@ -137,6 +141,8 @@ export function DesignPlatform() {
           logo_light_url: data.logo_light_url,
           logo_dark_url: data.logo_dark_url,
           primary_color: data.primary_color || "#0ea5e9",
+          button_color: data.button_color || "#0ea5e9",
+          button_hover_color: data.button_hover_color || "",
           sidebar_bg_color: data.sidebar_bg_color || "#1a1a1a",
           chat_user_bg_color: data.chat_user_bg_color || "#0ea5e9",
           chat_ai_bg_color: data.chat_ai_bg_color || "#374151",
@@ -207,6 +213,8 @@ export function DesignPlatform() {
     setSettings((prev) => ({
       ...prev,
       primary_color: "#004C97",
+      button_color: "#004C97",
+      button_hover_color: "#003366",
       sidebar_bg_color: "#F0F0F0",
       chat_user_bg_color: "#004C97",
       chat_ai_bg_color: "#F0F0F0",
@@ -355,6 +363,32 @@ export function DesignPlatform() {
                 value={settings.primary_color}
                 onChange={(e) => setSettings({ ...settings, primary_color: e.target.value })}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="button_color">Cor dos Botões (Normal)</Label>
+              <Input
+                id="button_color"
+                type="color"
+                value={settings.button_color || settings.primary_color}
+                onChange={(e) => setSettings({ ...settings, button_color: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground">
+                Cor de fundo padrão para botões de ação. Se vazio, usa a Cor Primária.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="button_hover_color">Cor dos Botões (Hover/Ao passar o mouse)</Label>
+              <Input
+                id="button_hover_color"
+                type="color"
+                value={settings.button_hover_color || settings.button_color || settings.primary_color}
+                onChange={(e) => setSettings({ ...settings, button_hover_color: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground">
+                Cor do botão quando o usuário passa o mouse. Se vazio, usa 10% mais escuro que a cor normal.
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -673,10 +707,16 @@ export function DesignPlatform() {
                           style={{ borderRadius: `${settings.border_radius}px` }}
                         />
                         <button
-                          className="w-full h-10 text-white font-medium"
+                          className="w-full h-10 text-white font-medium transition-colors"
                           style={{ 
-                            backgroundColor: settings.primary_color,
+                            backgroundColor: settings.button_color || settings.primary_color,
                             borderRadius: `${settings.border_radius}px`
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = settings.button_hover_color || settings.button_color || settings.primary_color;
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = settings.button_color || settings.primary_color;
                           }}
                         >
                           Entrar

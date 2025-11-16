@@ -51,6 +51,7 @@ export type Database = {
           border_radius: number | null
           browser_title: string | null
           button_color: string | null
+          button_hover_color: string | null
           chat_ai_bg_color: string | null
           chat_user_bg_color: string | null
           custom_font_name: string | null
@@ -74,6 +75,7 @@ export type Database = {
           border_radius?: number | null
           browser_title?: string | null
           button_color?: string | null
+          button_hover_color?: string | null
           chat_ai_bg_color?: string | null
           chat_user_bg_color?: string | null
           custom_font_name?: string | null
@@ -97,6 +99,7 @@ export type Database = {
           border_radius?: number | null
           browser_title?: string | null
           button_color?: string | null
+          button_hover_color?: string | null
           chat_ai_bg_color?: string | null
           chat_user_bg_color?: string | null
           custom_font_name?: string | null
