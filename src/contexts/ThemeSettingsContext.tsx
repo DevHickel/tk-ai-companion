@@ -11,6 +11,7 @@ interface ThemeSettings {
   logo_dark_url: string | null;
   login_bg_color: string | null;
   login_bg_url: string | null;
+  sidebar_bg_color: string;
 }
 
 interface ThemeSettingsContextType {
@@ -31,6 +32,7 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
     logo_dark_url: null,
     login_bg_color: null,
     login_bg_url: null,
+    sidebar_bg_color: "#ffffff",
   });
 
   async function loadSettings() {
@@ -57,6 +59,7 @@ export function ThemeSettingsProvider({ children }: { children: ReactNode }) {
           logo_dark_url: data.logo_dark_url || null,
           login_bg_color: (data as any).login_bg_color || null,
           login_bg_url: (data as any).login_bg_url || null,
+          sidebar_bg_color: (data as any).sidebar_bg_color || "#ffffff",
         };
         
         setSettings(newSettings);

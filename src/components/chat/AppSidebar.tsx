@@ -167,7 +167,12 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar 
+      collapsible="icon"
+      style={{
+        backgroundColor: theme === 'dark' ? '#09090b' : settings.sidebar_bg_color
+      }}
+    >
       <SidebarHeader className={`p-4 border-b ${!open ? "p-2" : ""}`}>
         <div className={`flex items-center gap-2 ${!open ? "justify-center" : ""}`}>
           {settings.logo_url || settings.logo_dark_url ? (
