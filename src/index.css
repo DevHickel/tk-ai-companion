@@ -97,13 +97,14 @@ All colors MUST be HSL.
     --chat-user-bg: 210 100% 60%;
     --chat-ai-bg: 215 20% 15%;
     
-    --sidebar-background: 215 25% 12%;
+    /* TK Solution Dark Mode - Force Black Sidebar */
+    --sidebar-background: 240 3% 4%; /* #09090b */
     --sidebar-foreground: 210 20% 95%;
     --sidebar-primary: 210 100% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 215 20% 20%;
     --sidebar-accent-foreground: 210 20% 95%;
-    --sidebar-border: 215 20% 25%;
+    --sidebar-border: 240 5% 12%; /* #1f1f22 */
     --sidebar-ring: 210 100% 60%;
     
     --gradient-primary: linear-gradient(135deg, hsl(var(--button)), hsl(var(--primary)));
