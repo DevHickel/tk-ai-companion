@@ -15,28 +15,54 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const authHeader = req.headers.get('Authorization')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
 
-    // Create Supabase client with service role for admin operations
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-
-    // Create regular client to verify the requesting user
-    const supabase = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!, {
-      global: { headers: { Authorization: authHeader } },
-    });
-
-    // Get the requesting user
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    // ✅ CORREÇÃO: Obter o token JWT do header Authorization
+    const authHeader = req.headers.get('Authorization');
     
-    if (userError || !user) {
-      console.error('Authentication error:', userError);
+    if (!authHeader) {
+      console.error('Missing Authorization header');
       return new Response(
-        JSON.stringify({ error: 'Não autenticado' }), 
+        JSON.stringify({ error: 'Não autenticado - Token ausente' }), 
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Check if the user is an admin
+    // Create Supabase client with service role for admin operations
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    });
+
+    // Create client with user's JWT to verify authentication
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { 
+        headers: { 
+          Authorization: authHeader 
+        } 
+      },
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    });
+
+    // Get the requesting user using their JWT
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    
+    if (userError || !user) {
+      console.error('Authentication error:', userError?.message || 'No user found');
+      return new Response(
+        JSON.stringify({ error: 'Não autenticado - Token inválido' }), 
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Authenticated user:', user.email);
+
+    // Check if the user is an admin using service role
     const { data: roles, error: rolesError } = await supabaseAdmin
       .from('user_roles')
       .select('role')
@@ -45,7 +71,7 @@ serve(async (req) => {
       .single();
 
     if (rolesError || !roles) {
-      console.error('Permission check error:', rolesError);
+      console.error('Permission check error:', rolesError?.message || 'User is not admin');
       return new Response(
         JSON.stringify({ error: 'Permissão negada. Apenas administradores podem deletar usuários.' }), 
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
