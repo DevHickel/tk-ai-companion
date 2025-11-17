@@ -213,7 +213,7 @@ export function AppSidebar() {
               T
             </div>
           )}
-          {open && <span className="font-bold text-lg">TkSolution</span>}
+          {open && <span className="font-bold text-lg">TK SOLUTION</span>}
         </div>
       </SidebarHeader>
 
