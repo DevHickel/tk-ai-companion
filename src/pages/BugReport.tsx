@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useAdmin } from "@/hooks/useAdmin";
 import { Bug, Upload, Shield } from "lucide-react";
 import { BugManagement } from "@/components/admin/BugManagement";
+import { bugReportSchema } from "@/lib/validation";
+import { z } from "zod";
 
 export default function BugReport() {
   const { user } = useAuth();
@@ -21,13 +23,19 @@ export default function BugReport() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!description.trim()) {
-      toast({
-        title: "Erro",
-        description: "Por favor, forneça uma descrição",
-        variant: "destructive",
-      });
-      return;
+    
+    // ✅ VALIDAÇÃO DE ENTRADA
+    try {
+      bugReportSchema.parse({ description });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erro de Validação",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setLoading(true);
