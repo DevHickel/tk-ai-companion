@@ -69,15 +69,14 @@ serve(async (req) => {
 
     console.log('Authenticated user:', user.email);
 
-    // Check if the user has admin role using service role
+    // Check if the user has admin or tk_master role using service role
     const { data: roleData, error: roleError } = await supabaseAdmin
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .eq('role', 'admin')
-      .single();
+      .in('role', ['admin', 'tk_master']);
 
-    if (roleError || !roleData) {
+    if (roleError || !roleData || roleData.length === 0) {
       console.error('Admin check failed:', roleError?.message || 'User is not admin');
       return new Response(
         JSON.stringify({ success: false, error: 'Acesso negado: apenas administradores podem convidar usuários' }), 

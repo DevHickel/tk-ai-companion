@@ -180,6 +180,28 @@ export function UserManagement() {
 
   async function handleToggleAdmin(userId: string, currentlyAdmin: boolean) {
     try {
+      // Verificar se o usuário atual tem permissão TK Master
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        throw new Error("Sessão não encontrada");
+      }
+
+      const { data: currentUserRoles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", session.user.id);
+
+      const isTkMaster = currentUserRoles?.some(r => r.role === "tk_master");
+
+      if (!isTkMaster) {
+        toast({
+          title: "Erro",
+          description: "Apenas usuários com permissão TK Master podem gerenciar administradores",
+          variant: "destructive",
+        });
+        return;
+      }
+
       if (currentlyAdmin) {
         const { error } = await supabase
           .from("user_roles")
