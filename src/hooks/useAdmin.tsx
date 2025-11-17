@@ -20,14 +20,13 @@ export function useAdmin() {
           .from("user_roles")
           .select("role")
           .eq("user_id", user.id)
-          .eq("role", "admin")
-          .single();
+          .in("role", ["admin", "tk_master"]);
 
         if (error && error.code !== "PGRST116") {
           console.error("Error checking admin status:", error);
         }
 
-        setIsAdmin(!!data);
+        setIsAdmin(data && data.length > 0);
       } catch (error) {
         console.error("Error checking admin:", error);
         setIsAdmin(false);
