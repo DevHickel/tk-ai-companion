@@ -61,12 +61,12 @@ export function ConversationItem({
   // EXPANDED VIEW: Full item with menu
   return (
     <SidebarMenuItem>
-      <div className="group relative w-full rounded-md text-sm">
+      <div className="relative w-full rounded-md text-sm">
         {/* 1. Main Link - navigates to chat */}
         <NavLink
           to={`/chat?id=${conversation.id}`}
-          className="flex items-center gap-2 w-full px-3 py-2 rounded-md hover:bg-[#1f1f22] transition-colors pr-10"
-          activeClassName="bg-[#1f1f22] font-medium"
+          className="flex items-center gap-2 w-full px-3 py-2 rounded-md bg-transparent text-slate-900 hover:bg-gray-100/70 dark:bg-transparent dark:text-gray-200 dark:hover:bg-zinc-800 transition-colors pr-10"
+          activeClassName="bg-blue-100 dark:bg-zinc-800 font-medium"
           onClick={onMobileClose}
         >
           {conversation.pinned ? (
@@ -77,14 +77,14 @@ export function ConversationItem({
           <span className="truncate">{conversation.title}</span>
         </NavLink>
 
-        {/* 2. Floating Menu Button (Three Dots) */}
-        <div className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* 2. Floating Menu Button (Three Dots - Always Visible) */}
+        <div className="absolute right-1 top-1/2 -translate-y-1/2 z-50">
           <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7"
+                className="h-7 w-7 hover:bg-gray-200 dark:hover:bg-zinc-700"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -95,7 +95,7 @@ export function ConversationItem({
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-48 bg-background dark:bg-[#09090b] border-border dark:border-zinc-800"
+              className="w-48 bg-background dark:bg-[#09090b] border-border dark:border-zinc-800 z-50"
             >
               <DropdownMenuItem
                 onSelect={() => {
