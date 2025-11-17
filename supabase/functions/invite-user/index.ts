@@ -20,6 +20,10 @@ serve(async (req) => {
     // ✅ CORREÇÃO: Obter o token JWT do header Authorization
     const authHeader = req.headers.get('Authorization');
     
+    console.log('=== DEBUG INVITE USER ===');
+    console.log('Authorization header:', authHeader ? 'Present' : 'Missing');
+    console.log('All headers:', Object.fromEntries(req.headers.entries()));
+    
     if (!authHeader) {
       console.error('Missing Authorization header');
       return new Response(

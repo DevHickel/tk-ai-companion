@@ -102,8 +102,20 @@ export function UserManagement() {
 
     setInviting(true);
     try {
+      // Obter sessão atual para incluir token de autenticação
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.access_token) {
+        throw new Error("Sessão não encontrada. Faça login novamente.");
+      }
+
+      console.log('Sending invite with auth token');
+      
       const { data, error } = await supabase.functions.invoke('invite-user', {
-        body: { email: inviteEmail }
+        body: { email: inviteEmail },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
       });
 
       if (error) throw error;
@@ -131,8 +143,18 @@ export function UserManagement() {
 
   async function handleDeleteUser(userId: string, email: string) {
     try {
+      // Obter sessão atual para incluir token de autenticação
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.access_token) {
+        throw new Error("Sessão não encontrada. Faça login novamente.");
+      }
+
       const { data, error } = await supabase.functions.invoke('delete-user', {
-        body: { userId }
+        body: { userId },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
       });
 
       if (error) throw error;
