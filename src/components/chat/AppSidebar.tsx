@@ -190,6 +190,15 @@ export function AppSidebar() {
     }
   };
 
+  const { setOpen } = useSidebar();
+
+  const closeMobileSidebar = () => {
+    // Close sidebar on mobile after navigation
+    if (window.innerWidth < 768) {
+      setOpen(false);
+    }
+  };
+
   return (
     <Sidebar 
       collapsible="icon"
@@ -230,6 +239,7 @@ export function AppSidebar() {
                     <NavLink 
                       to="/chat"
                       className={!open ? "justify-center" : ""}
+                      onClick={closeMobileSidebar}
                     >
                       <item.icon className="h-4 w-4 flex-shrink-0" />
                       {open && <span>{item.title}</span>}
@@ -261,6 +271,7 @@ export function AppSidebar() {
                             to={`/chat?id=${conv.id}`} 
                             className="flex items-center flex-1 min-w-0"
                             activeClassName="font-medium"
+                            onClick={closeMobileSidebar}
                           >
                             {conv.pinned ? (
                               <Pin className="h-4 w-4 mr-2 shrink-0 fill-current text-primary" />
@@ -331,6 +342,7 @@ export function AppSidebar() {
                           <NavLink 
                             to={`/chat?id=${conv.id}`} 
                             className="flex items-center justify-center"
+                            onClick={closeMobileSidebar}
                           >
                             {conv.pinned ? (
                               <Pin className="h-4 w-4 fill-current text-primary" />
@@ -359,6 +371,7 @@ export function AppSidebar() {
                   className="group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:justify-center hover:bg-sidebar-accent"
                   activeClassName="bg-sidebar-accent"
                   title={item.title}
+                  onClick={closeMobileSidebar}
                 >
                   <item.icon className="h-4 w-4 flex-shrink-0" />
                   <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>

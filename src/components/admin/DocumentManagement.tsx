@@ -197,8 +197,9 @@ export function DocumentManagement() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center gap-4">
-            <div className="flex-1">
+          {/* Mobile-friendly upload form */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <div className="flex-1 w-full">
               <Input
                 type="file"
                 accept=".pdf"
@@ -208,12 +209,13 @@ export function DocumentManagement() {
                   setSelectedFiles(files);
                 }}
                 disabled={uploading}
+                className="w-full"
               />
             </div>
             <Button
               onClick={handleUpload}
               disabled={selectedFiles.length === 0 || uploading}
-              className="text-white"
+              className="text-white w-full sm:w-auto"
             >
               {uploading ? (
                 <>
@@ -265,6 +267,7 @@ export function DocumentManagement() {
             placeholder="Buscar por nome do arquivo..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full"
           />
 
           {loading ? (
@@ -277,32 +280,67 @@ export function DocumentManagement() {
               <p>Nenhum documento encontrado</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome do Arquivo</TableHead>
-                  <TableHead className="text-right">Total de Páginas/Chunks</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <>
+              {/* Desktop table view */}
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nome do Arquivo</TableHead>
+                      <TableHead className="text-right">Total de Páginas/Chunks</TableHead>
+                      <TableHead className="text-right">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredDocuments.map((doc) => (
+                      <TableRow key={doc.source}>
+                        <TableCell className="font-medium">{doc.source}</TableCell>
+                        <TableCell className="text-right">{doc.totalChunks}</TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeleteTarget(doc.source)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile card view */}
+              <div className="md:hidden space-y-3">
                 {filteredDocuments.map((doc) => (
-                  <TableRow key={doc.source}>
-                    <TableCell className="font-medium">{doc.source}</TableCell>
-                    <TableCell className="text-right">{doc.totalChunks}</TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setDeleteTarget(doc.source)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                  <Card key={doc.source} className="dark:bg-zinc-900 dark:border-zinc-800">
+                    <CardContent className="p-4 space-y-2">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-muted-foreground">Nome do Arquivo</p>
+                          <p className="font-medium truncate">{doc.source}</p>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center pt-2 border-t dark:border-zinc-800">
+                        <div>
+                          <p className="text-sm font-medium text-muted-foreground">Total de Páginas</p>
+                          <p className="font-medium">{doc.totalChunks}</p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setDeleteTarget(doc.source)}
+                          className="text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
-              </TableBody>
-            </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

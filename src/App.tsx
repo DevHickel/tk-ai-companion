@@ -57,7 +57,8 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen flex w-full dark:bg-[#17181b] bg-white">
         <AppSidebar />
         <div className="flex-1 flex flex-col dark:bg-[#17181b] bg-white">
-          <header className="h-14 border-b dark:border-[#17181b] bg-background dark:bg-[#17181b] flex items-center justify-between px-4">
+          {/* Fixed sticky header */}
+          <header className="sticky top-0 z-50 h-14 w-full border-b dark:border-[#17181b] bg-background dark:bg-[#17181b] flex items-center justify-between px-4">
             <SidebarTrigger />
             
             <DropdownMenu>
@@ -71,7 +72,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48 bg-background dark:bg-zinc-900 z-50">
                 <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
                   <User className="mr-2 h-4 w-4" />
                   Perfil
