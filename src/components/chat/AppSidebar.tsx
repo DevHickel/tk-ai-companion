@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MessageSquare, Plus, Settings, Bug, LogOut, User, Moon, Sun, Shield, Trash2, Pin, Edit3, Command, MoreVertical } from "lucide-react";
+import { Plus, Settings, Bug, LogOut, Moon, Sun, Shield } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -34,13 +34,6 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -50,6 +43,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { ConversationItem } from "./ConversationItem";
 
 interface Conversation {
   id: string;
@@ -87,7 +81,6 @@ export function AppSidebar() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newTitle, setNewTitle] = useState("");
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const { settings } = useThemeSettings();
   const { profile } = useUserProfile();
   
@@ -264,7 +257,21 @@ export function AppSidebar() {
                   )
                 ) : (
                   conversations.map((conv) => (
-                    <SidebarMenuItem key={conv.id} className="group/item">
+                    <ConversationItem
+                      key={conv.id}
+                      conversation={conv}
+                      isExpanded={open}
+                      onTogglePin={togglePinConversation}
+                      onRename={openRenameDialog}
+                      onDelete={openDeleteDialog}
+                      onMobileClose={closeMobileSidebar}
+                    />
+                  ))
+                )}
+              </SidebarMenu>
+            </ScrollArea>
+          </SidebarGroupContent>
+        </SidebarGroup>
                       {open ? (
                         <div className="group relative flex items-center w-full rounded-lg p-2 hover:bg-[#1f1f22] transition-colors cursor-pointer">
                           <NavLink 
