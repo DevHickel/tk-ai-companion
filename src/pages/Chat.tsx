@@ -260,11 +260,12 @@ export default function Chat() {
 
   return (
     <div 
-      className="flex flex-col h-full overflow-hidden"
+      className="flex flex-col h-[calc(100vh-3.5rem)]"
       style={{
         backgroundColor: document.documentElement.classList.contains('dark') ? '#17181b' : '#f9fafb'
       }}
     >
+      {/* Messages area - scrollable */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto p-6">
           {messages.length === 0 ? (
@@ -306,7 +307,11 @@ export default function Chat() {
           )}
         </div>
       </div>
-      <ChatInput onSend={handleSend} disabled={loading} />
+      
+      {/* Input bar - fixed at bottom */}
+      <div className="flex-shrink-0">
+        <ChatInput onSend={handleSend} disabled={loading} />
+      </div>
     </div>
   );
 }
