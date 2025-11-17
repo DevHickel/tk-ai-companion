@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Sun, Moon } from "lucide-react";
+import { authSchema, passwordRecoverySchema } from "@/lib/validation";
+import { z } from "zod";
 
 export default function Auth() {
   const [email, setEmail] = useState("");
@@ -22,6 +24,21 @@ export default function Auth() {
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // ✅ VALIDAÇÃO DE ENTRADA
+    try {
+      authSchema.parse({ email, password });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erro de Validação",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
     setLoading(true);
 
     try {
@@ -66,6 +83,21 @@ export default function Auth() {
 
   const handlePasswordRecovery = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // ✅ VALIDAÇÃO DE ENTRADA
+    try {
+      passwordRecoverySchema.parse({ email });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erro de Validação",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
     setLoading(true);
 
     try {

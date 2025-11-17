@@ -7,6 +7,8 @@ import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/contexts/ThemeContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { passwordChangeSchema } from "@/lib/validation";
+import { z } from "zod";
 
 export default function Settings() {
   const { theme, toggleTheme } = useTheme();
@@ -18,22 +20,18 @@ export default function Settings() {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (newPassword !== confirmPassword) {
-      toast({
-        title: "Erro",
-        description: "As senhas não coincidem.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (newPassword.length < 6) {
-      toast({
-        title: "Erro",
-        description: "A senha deve ter no mínimo 6 caracteres.",
-        variant: "destructive",
-      });
-      return;
+    // ✅ VALIDAÇÃO DE ENTRADA
+    try {
+      passwordChangeSchema.parse({ newPassword, confirmPassword });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erro de Validação",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setLoading(true);

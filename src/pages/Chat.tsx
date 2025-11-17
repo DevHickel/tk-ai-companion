@@ -7,6 +7,9 @@ import { ChatMessage } from "@/components/chat/ChatMessage";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
+import { messageSchema } from "@/lib/validation";
+import { z } from "zod";
+import { isDevelopment } from "@/lib/env";
 
 interface Message {
   id?: string;
@@ -97,7 +100,10 @@ export default function Chat() {
       setMessages(typedMessages);
       setCurrentConversationId(conversationId);
     } catch (error) {
-      console.error('Error loading conversation:', error);
+      // ✅ LOGGING SEGURO - apenas em dev
+      if (isDevelopment) {
+        console.error('Error loading conversation:', error);
+      }
       toast({
         title: "Erro",
         description: "Falha ao carregar conversa",
@@ -163,11 +169,28 @@ export default function Chat() {
       
       return data;
     } catch (error) {
-      console.error('Error saving message:', error);
+      // ✅ LOGGING SEGURO - apenas em dev
+      if (isDevelopment) {
+        console.error('Error saving message:', error);
+      }
     }
   };
 
   const handleSend = async (content: string) => {
+    // ✅ VALIDAÇÃO DE ENTRADA
+    try {
+      messageSchema.parse({ content });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erro de Validação",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
     // Create new conversation if none exists
     if (!currentConversationId) {
       const newConv = await createNewConversationAndReturn(content);
@@ -248,6 +271,10 @@ export default function Chat() {
       // Save assistant message
       await saveMessage(currentConversationId, "assistant", aiMessage.content);
     } catch (error: any) {
+      // ✅ LOGGING SEGURO - apenas em dev
+      if (isDevelopment) {
+        console.error('Chat error:', error);
+      }
       toast({
         title: "Erro",
         description: "Erro ao conectar com a IA",
