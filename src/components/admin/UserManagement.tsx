@@ -244,7 +244,8 @@ export function UserManagement() {
                 <TableHead>Email</TableHead>
                 <TableHead>Nome</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Role</TableHead>
+                <TableHead>Permissões</TableHead>
+                <TableHead className="text-right">Ações</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>

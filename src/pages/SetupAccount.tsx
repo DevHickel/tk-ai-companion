@@ -97,10 +97,23 @@ export default function SetupAccount() {
       // Update profile with full name
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase
+        const { error: profileError } = await supabase
           .from("profiles")
           .update({ full_name: fullName })
           .eq("id", user.id);
+        
+        if (profileError) {
+          console.error("Error updating profile:", profileError);
+        }
+
+        // Log activity
+        await supabase
+          .from("activity_logs")
+          .insert({
+            user_id: user.id,
+            action: "Conta configurada",
+            details: { email: user.email, full_name: fullName }
+          });
       }
 
       toast({
@@ -176,7 +189,7 @@ export default function SetupAccount() {
           </div>
           <CardTitle className="text-2xl text-center">Crie sua Conta</CardTitle>
           <CardDescription className="text-center">
-            Bem-vindo à TK Solution. Configure seu nome e senha.
+            Configure seu nome completo e defina sua senha para começar.
           </CardDescription>
         </CardHeader>
         <CardContent>
