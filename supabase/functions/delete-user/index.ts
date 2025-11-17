@@ -62,15 +62,14 @@ serve(async (req) => {
 
     console.log('Authenticated user:', user.email);
 
-    // Check if the user is an admin using service role
+    // Check if the user is an admin or tk_master using service role
     const { data: roles, error: rolesError } = await supabaseAdmin
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .eq('role', 'admin')
-      .single();
+      .in('role', ['admin', 'tk_master']);
 
-    if (rolesError || !roles) {
+    if (rolesError || !roles || roles.length === 0) {
       console.error('Permission check error:', rolesError?.message || 'User is not admin');
       return new Response(
         JSON.stringify({ error: 'Permissão negada. Apenas administradores podem deletar usuários.' }), 
@@ -91,8 +90,25 @@ serve(async (req) => {
     // Prevent admin from deleting themselves
     if (userId === user.id) {
       return new Response(
-        JSON.stringify({ error: 'Você não pode deletar sua própria conta de admin' }), 
+        JSON.stringify({ error: 'Você não pode deletar sua própria conta' }), 
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check if target user is admin - only tk_master can delete admins
+    const { data: targetRoles } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .in('role', ['admin', 'tk_master']);
+
+    const targetIsAdmin = targetRoles && targetRoles.length > 0;
+    const currentUserIsTkMaster = roles.some((r: any) => r.role === 'tk_master');
+
+    if (targetIsAdmin && !currentUserIsTkMaster) {
+      return new Response(
+        JSON.stringify({ error: 'Apenas usuários com permissão TK Master podem remover administradores' }), 
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
