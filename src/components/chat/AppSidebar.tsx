@@ -133,7 +133,6 @@ export function AppSidebar() {
   const openDeleteDialog = (conv: Conversation) => {
     setSelectedConversation(conv);
     setDeleteDialogOpen(true);
-    setOpenMenuId(null);
   };
 
   const confirmDelete = async () => {
@@ -159,15 +158,12 @@ export function AppSidebar() {
       .from('conversations')
       .update({ pinned: !currentPinned })
       .eq('id', id);
-    
-    setOpenMenuId(null);
   };
 
   const openRenameDialog = (conv: Conversation) => {
     setSelectedConversation(conv);
     setNewTitle(conv.title);
     setRenameDialogOpen(true);
-    setOpenMenuId(null);
   };
 
   const handleRename = async () => {
@@ -266,100 +262,6 @@ export function AppSidebar() {
                       onDelete={openDeleteDialog}
                       onMobileClose={closeMobileSidebar}
                     />
-                  ))
-                )}
-              </SidebarMenu>
-            </ScrollArea>
-          </SidebarGroupContent>
-        </SidebarGroup>
-                      {open ? (
-                        <div className="group relative flex items-center w-full rounded-lg p-2 hover:bg-[#1f1f22] transition-colors cursor-pointer">
-                          <NavLink 
-                            to={`/chat?id=${conv.id}`} 
-                            className="flex items-center flex-1 min-w-0"
-                            activeClassName="font-medium"
-                            onClick={closeMobileSidebar}
-                          >
-                            {conv.pinned ? (
-                              <Pin className="h-4 w-4 mr-2 shrink-0 fill-current text-primary" />
-                            ) : (
-                              <MessageSquare className="h-4 w-4 mr-2 shrink-0 text-zinc-400" />
-                            )}
-                            
-                            <span className="flex-1 truncate text-sm text-left pr-8">
-                              {conv.title}
-                            </span>
-                          </NavLink>
-                          
-                          {/* The Gemini Button - Controlled & Hidden by default */}
-                          <DropdownMenu 
-                            open={openMenuId === conv.id} 
-                            onOpenChange={(open) => setOpenMenuId(open ? conv.id : null)}
-                          >
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 z-50 hidden group-hover:flex items-center justify-center bg-transparent hover:bg-[#1f1f22] text-zinc-500 hover:text-zinc-200 rounded-md"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                }}
-                              >
-                                <MoreVertical className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent 
-                              align="end"
-                              className="bg-white dark:bg-[#09090b] border-gray-200 dark:border-zinc-800 text-slate-900 dark:text-gray-200 z-50"
-                            >
-                              <DropdownMenuItem
-                                onSelect={() => {
-                                  togglePinConversation(conv.id, conv.pinned);
-                                }}
-                                className="cursor-pointer dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
-                              >
-                                <Pin className={`h-4 w-4 mr-2 ${conv.pinned ? 'fill-current' : ''}`} />
-                                {conv.pinned ? 'Desafixar' : 'Fixar'}
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onSelect={() => {
-                                  openRenameDialog(conv);
-                                }}
-                                className="cursor-pointer dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
-                              >
-                                <Edit3 className="h-4 w-4 mr-2" />
-                                Renomear
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator className="dark:bg-zinc-800" />
-                              <DropdownMenuItem
-                                onSelect={() => {
-                                  openDeleteDialog(conv);
-                                }}
-                                className="cursor-pointer text-destructive focus:text-destructive dark:focus:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-800"
-                              >
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                Excluir
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      ) : (
-                        <SidebarMenuButton asChild>
-                          <NavLink 
-                            to={`/chat?id=${conv.id}`} 
-                            className="flex items-center justify-center"
-                            onClick={closeMobileSidebar}
-                          >
-                            {conv.pinned ? (
-                              <Pin className="h-4 w-4 fill-current text-primary" />
-                            ) : (
-                              <MessageSquare className="h-4 w-4" />
-                            )}
-                          </NavLink>
-                        </SidebarMenuButton>
-                      )}
-                    </SidebarMenuItem>
                   ))
                 )}
               </SidebarMenu>
