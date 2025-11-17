@@ -175,7 +175,7 @@ export default function Auth() {
             {!isRecoveryMode && (
               <button
                 type="button"
-                onClick={() => setIsRecoveryMode(true)}
+                onClick={() => navigate("/forgot-password")}
                 className="text-sm text-primary hover:underline"
               >
                 Esqueceu sua senha?

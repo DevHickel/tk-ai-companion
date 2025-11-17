@@ -21,6 +21,8 @@ import Settings from "./pages/Settings";
 import Admin from "./pages/Admin";
 import BugReport from "./pages/BugReport";
 import UpdatePassword from "./pages/UpdatePassword";
+import ForgotPassword from "./pages/ForgotPassword";
+import SetupAccount from "./pages/SetupAccount";
 import NotFound from "./pages/NotFound";
 
 
@@ -93,6 +95,8 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/auth" element={user ? <Navigate to="/chat" replace /> : <Auth />} />
+      <Route path="/forgot-password" element={user ? <Navigate to="/chat" replace /> : <ForgotPassword />} />
+      <Route path="/setup-account" element={<SetupAccount />} />
       <Route
         path="/chat"
         element={
