@@ -84,7 +84,7 @@ export function ConversationItem({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-zinc-700"
+                className="h-7 w-7 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-zinc-700"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
