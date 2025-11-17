@@ -65,8 +65,8 @@ export function ConversationItem({
         {/* 1. Main Link - navigates to chat */}
         <NavLink
           to={`/chat?id=${conversation.id}`}
-          className="flex items-center gap-2 w-full px-3 py-2 rounded-md bg-transparent text-slate-900 hover:bg-gray-100/70 dark:bg-transparent dark:text-gray-200 dark:hover:bg-zinc-800 transition-colors pr-10"
-          activeClassName="bg-blue-100 dark:bg-zinc-800 font-medium"
+          className="flex items-center gap-2 w-full px-3 py-2 rounded-md bg-transparent text-slate-900 hover:bg-gray-100 dark:bg-transparent dark:text-gray-200 dark:hover:bg-zinc-800 transition-colors pr-10"
+          activeClassName="bg-gray-100 dark:bg-zinc-800 font-medium"
           onClick={onMobileClose}
         >
           {conversation.pinned ? (
@@ -74,7 +74,7 @@ export function ConversationItem({
           ) : (
             <MessageSquare className="h-4 w-4 shrink-0 text-muted-foreground" />
           )}
-          <span className="truncate">{conversation.title}</span>
+          <span className="flex-1 truncate text-left">{conversation.title}</span>
         </NavLink>
 
         {/* 2. Floating Menu Button (Three Dots - Always Visible) */}
@@ -84,7 +84,7 @@ export function ConversationItem({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7 hover:bg-gray-200 dark:hover:bg-zinc-700"
+                className="h-7 w-7 text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-zinc-700"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -95,7 +95,7 @@ export function ConversationItem({
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-48 bg-background dark:bg-[#09090b] border-border dark:border-zinc-800 z-50"
+              className="w-48 bg-white dark:bg-[#09090b] border-gray-200 dark:border-zinc-800 z-50"
             >
               <DropdownMenuItem
                 onSelect={() => {
@@ -126,7 +126,7 @@ export function ConversationItem({
                   onDelete(conversation);
                   setIsMenuOpen(false);
                 }}
-                className="cursor-pointer text-destructive focus:text-destructive"
+                className="cursor-pointer text-red-600 dark:text-red-500 focus:text-red-600 dark:focus:text-red-500"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Excluir
