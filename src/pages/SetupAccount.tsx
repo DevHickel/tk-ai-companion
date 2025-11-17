@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Sun, Moon, Loader2 } from "lucide-react";
 
 export default function SetupAccount() {
-  const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -23,14 +22,12 @@ export default function SetupAccount() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is authenticated and get their email
+    // Check if user is authenticated
     const checkUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         
-        if (user) {
-          setEmail(user.email || "");
-        } else {
+        if (!user) {
           toast({
             title: "Erro",
             description: "Link de convite inválido ou expirado.",
@@ -194,16 +191,6 @@ export default function SetupAccount() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSetupAccount} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                disabled
-                className="w-full bg-muted"
-              />
-            </div>
             <div className="space-y-2">
               <Label htmlFor="fullName">Nome Completo</Label>
               <Input
