@@ -13,35 +13,60 @@ serve(async (req) => {
   }
 
   try {
-    // Get the authorization header
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
+
+    // ✅ CORREÇÃO: Obter o token JWT do header Authorization
     const authHeader = req.headers.get('Authorization');
+    
     if (!authHeader) {
-      throw new Error('Missing authorization header');
+      console.error('Missing Authorization header');
+      return new Response(
+        JSON.stringify({ success: false, error: 'Não autenticado - Token ausente' }), 
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // Create a Supabase client with the Auth context of the logged in user
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: authHeader },
-        },
+    // Create Supabase client with service role for admin operations
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
       }
-    );
+    });
 
-    // Get the user from the auth header
+    // Create client with user's JWT to verify authentication
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { 
+        headers: { 
+          Authorization: authHeader 
+        } 
+      },
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    });
+
+    // Get the requesting user using their JWT
     const {
       data: { user },
       error: userError,
     } = await supabaseClient.auth.getUser();
 
     if (userError || !user) {
-      throw new Error('Unauthorized');
+      console.error('Authentication error:', userError?.message || 'No user found');
+      return new Response(
+        JSON.stringify({ success: false, error: 'Não autenticado - Token inválido' }), 
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // Check if the user has admin role
-    const { data: roleData, error: roleError } = await supabaseClient
+    console.log('Authenticated user:', user.email);
+
+    // Check if the user has admin role using service role
+    const { data: roleData, error: roleError } = await supabaseAdmin
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
@@ -49,8 +74,11 @@ serve(async (req) => {
       .single();
 
     if (roleError || !roleData) {
-      console.error('Admin check failed:', roleError);
-      throw new Error('Acesso negado: apenas administradores podem convidar usuários');
+      console.error('Admin check failed:', roleError?.message || 'User is not admin');
+      return new Response(
+        JSON.stringify({ success: false, error: 'Acesso negado: apenas administradores podem convidar usuários' }), 
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Get the email from the request body
@@ -63,33 +91,29 @@ serve(async (req) => {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      throw new Error('Email inválido');
+      return new Response(
+        JSON.stringify({ success: false, error: 'Email inválido' }), 
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
-
-    // Create admin client using service role key
-    const supabaseAdmin = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
-      }
-    );
 
     // Get the origin from the request headers
     const origin = req.headers.get('origin') || req.headers.get('referer')?.split('/').slice(0, 3).join('/') || '';
     const redirectUrl = `${origin}/update-password`;
 
-    // Invite the user
+    console.log('Inviting user:', email, 'with redirect to:', redirectUrl);
+
+    // Invite the user using admin client
     const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
       redirectTo: redirectUrl
     });
 
     if (error) {
       console.error('Invite error:', error);
-      throw error;
+      return new Response(
+        JSON.stringify({ success: false, error: error.message }), 
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Log the activity
