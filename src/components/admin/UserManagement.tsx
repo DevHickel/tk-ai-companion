@@ -102,18 +102,8 @@ export function UserManagement() {
 
     setInviting(true);
     try {
-      // ✅ CORREÇÃO: Obter o token de sessão para passar à edge function
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        throw new Error("Não autenticado");
-      }
-
       const { data, error } = await supabase.functions.invoke('invite-user', {
-        body: { email: inviteEmail },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        }
+        body: { email: inviteEmail }
       });
 
       if (error) throw error;
@@ -141,18 +131,8 @@ export function UserManagement() {
 
   async function handleDeleteUser(userId: string, email: string) {
     try {
-      // ✅ CORREÇÃO: Obter o token de sessão para passar à edge function
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        throw new Error("Não autenticado");
-      }
-
       const { data, error } = await supabase.functions.invoke('delete-user', {
-        body: { userId },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        }
+        body: { userId }
       });
 
       if (error) throw error;
