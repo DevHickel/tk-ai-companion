@@ -28,7 +28,7 @@ export default function Chat() {
   const { settings } = useThemeSettings();
   const [searchParams] = useSearchParams();
 
-  // Load conversation from URL
+  // Load conversation from URL or create new one
   useEffect(() => {
     if (!user) return;
 
@@ -36,11 +36,34 @@ export default function Chat() {
     if (conversationId) {
       loadConversation(conversationId);
     } else {
-      // Reset to empty state when no conversation is selected
-      setMessages([]);
-      setCurrentConversationId(null);
+      // Create a new conversation when accessing /chat without an ID
+      createInitialConversation();
     }
   }, [user, searchParams]);
+
+  const createInitialConversation = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('conversations')
+        .insert({ 
+          user_id: user.id, 
+          title: 'Nova Conversa' 
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setCurrentConversationId(data.id);
+      navigate(`/chat?id=${data.id}`, { replace: true });
+    } catch (error) {
+      if (isDevelopment) {
+        console.error('Error creating initial conversation:', error);
+      }
+    }
+  };
 
   // Subscribe to realtime message updates
   useEffect(() => {
