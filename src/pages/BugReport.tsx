@@ -114,7 +114,7 @@ export default function BugReport() {
                   <CardTitle>Reportar um Bug</CardTitle>
                 </div>
                 <CardDescription>
-                  Ajude-nos a melhorar o TkSolution reportando problemas que você encontrar
+                  Ajude-nos a melhorar o TK SOLUTION reportando problemas que você encontrar
                 </CardDescription>
               </CardHeader>
               <CardContent>

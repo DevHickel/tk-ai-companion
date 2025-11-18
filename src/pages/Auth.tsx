@@ -172,7 +172,7 @@ export default function Auth() {
           <CardDescription className="text-center">
             {isRecoveryMode 
               ? "Digite seu e-mail para recuperar sua senha" 
-              : "Entre para continuar no TkSolution"}
+              : "Entre para continuar no TK SOLUTION"}
           </CardDescription>
         </CardHeader>
         <CardContent>

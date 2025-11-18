@@ -184,9 +184,9 @@ export default function SetupAccount() {
               </div>
             )}
           </div>
-          <CardTitle className="text-2xl text-center">Crie sua Conta</CardTitle>
+          <CardTitle className="text-2xl text-center">Bem-vindo ao TK SOLUTION</CardTitle>
           <CardDescription className="text-center">
-            Configure seu nome completo e defina sua senha para começar.
+            Defina sua senha para ativar sua conta
           </CardDescription>
         </CardHeader>
         <CardContent>
