@@ -91,12 +91,15 @@ export default function SetupAccount() {
 
       if (updateError) throw updateError;
 
-      // Update profile with full name
+      // Update profile with full name and status
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { error: profileError } = await supabase
           .from("profiles")
-          .update({ full_name: fullName })
+          .update({ 
+            full_name: fullName,
+            account_status: 'Cadastrado'
+          })
           .eq("id", user.id);
         
         if (profileError) {

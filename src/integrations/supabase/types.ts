@@ -233,6 +233,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_status: string | null
           avatar_url: string | null
           email: string | null
           full_name: string | null
@@ -242,6 +243,7 @@ export type Database = {
           theme_preference: string | null
         }
         Insert: {
+          account_status?: string | null
           avatar_url?: string | null
           email?: string | null
           full_name?: string | null
@@ -251,6 +253,7 @@ export type Database = {
           theme_preference?: string | null
         }
         Update: {
+          account_status?: string | null
           avatar_url?: string | null
           email?: string | null
           full_name?: string | null

@@ -24,6 +24,7 @@ interface Profile {
   id: string;
   email: string;
   full_name: string | null;
+  account_status: string | null;
   user_roles?: Array<{ role: string }>;
   last_sign_in_at?: string | null;
 }
@@ -328,13 +329,13 @@ export function UserManagement() {
                       <TableCell className="font-medium">{user.email}</TableCell>
                       <TableCell>{user.full_name || "—"}</TableCell>
                       <TableCell>
-                        {isPending ? (
-                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-500/20 dark:text-yellow-400 dark:border-yellow-500/30">
-                            Pendente
+                        {user.account_status === 'Cadastrado' ? (
+                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800 border border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/30">
+                            Cadastrado
                           </span>
                         ) : (
-                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800 border border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/30">
-                            Ativo
+                          <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-500/20 dark:text-yellow-400 dark:border-yellow-500/30">
+                            Pendente
                           </span>
                         )}
                       </TableCell>
