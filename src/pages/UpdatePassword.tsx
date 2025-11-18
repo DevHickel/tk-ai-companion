@@ -56,7 +56,7 @@ export default function UpdatePassword() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            Bem-vindo ao TkSolution
+            Bem-vindo ao TK SOLUTION
           </CardTitle>
           <CardDescription className="text-center">
             Defina sua senha para ativar sua conta

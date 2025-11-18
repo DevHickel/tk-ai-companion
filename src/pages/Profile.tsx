@@ -164,6 +164,18 @@ export default function Profile() {
   return (
     <div className="min-h-screen dark:bg-[#17181b] bg-gradient-subtle p-6">
       <div className="max-w-2xl mx-auto space-y-6">
+        <div className="flex items-center gap-4 mb-6">
+          <Avatar className="h-16 w-16">
+            <AvatarImage src={avatarUrl} />
+            <AvatarFallback className="bg-primary text-primary-foreground">
+              <User className="h-8 w-8" />
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <h1 className="text-3xl font-bold">{fullName || "Perfil"}</h1>
+            <p className="text-muted-foreground">{user?.email}</p>
+          </div>
+        </div>
         <Card className="shadow-soft dark:bg-[#09090b] dark:border-zinc-800">
           <CardHeader>
             <CardTitle>Configurações do Perfil</CardTitle>

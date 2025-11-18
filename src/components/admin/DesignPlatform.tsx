@@ -91,7 +91,7 @@ function hexToHSL(hex: string): string {
 
 export function DesignPlatform() {
   const [settings, setSettings] = useState<DesignSettings>({
-    browser_title: "TkSolution App",
+    browser_title: "TK SOLUTION App",
     favicon_url: null,
     logo_light_url: null,
     logo_dark_url: null,
@@ -134,7 +134,7 @@ export function DesignPlatform() {
       if (error) throw error;
       if (data) {
         setSettings({
-          browser_title: data.browser_title || "TkSolution App",
+          browser_title: data.browser_title || "TK SOLUTION App",
           favicon_url: data.favicon_url,
           logo_light_url: data.logo_light_url,
           logo_dark_url: data.logo_dark_url,
@@ -292,7 +292,7 @@ export function DesignPlatform() {
                 id="browser_title"
                 value={settings.browser_title}
                 onChange={(e) => setSettings({ ...settings, browser_title: e.target.value })}
-                placeholder="TkSolution App"
+                placeholder="TK SOLUTION App"
               />
             </div>
 
