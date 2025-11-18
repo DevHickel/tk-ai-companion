@@ -151,7 +151,7 @@ export function UserManagement() {
       }
 
       const { data, error } = await supabase.functions.invoke('delete-user', {
-        body: { userId: userId },
+        body: { user_id: userId },
         headers: {
           Authorization: `Bearer ${session.access_token}`
         }

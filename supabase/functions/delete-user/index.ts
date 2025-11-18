@@ -78,17 +78,17 @@ serve(async (req) => {
     }
 
     // Get the userId to delete from request body
-    const { userId } = await req.json();
+    const { user_id } = await req.json();
 
-    if (!userId) {
+    if (!user_id) {
       return new Response(
-        JSON.stringify({ error: 'userId é obrigatório' }), 
+        JSON.stringify({ error: 'ID do usuário não fornecido.' }), 
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     // Prevent admin from deleting themselves
-    if (userId === user.id) {
+    if (user_id === user.id) {
       return new Response(
         JSON.stringify({ error: 'Você não pode deletar sua própria conta' }), 
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -99,7 +99,7 @@ serve(async (req) => {
     const { data: targetRoles } = await supabaseAdmin
       .from('user_roles')
       .select('role')
-      .eq('user_id', userId)
+      .eq('user_id', user_id)
       .in('role', ['admin', 'tk_master']);
 
     const targetIsAdmin = targetRoles && targetRoles.length > 0;
@@ -112,10 +112,10 @@ serve(async (req) => {
       );
     }
 
-    console.log('Deleting user:', userId);
+    console.log('Deleting user:', user_id);
 
     // Delete the user using Admin API
-    const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+    const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(user_id);
 
     if (deleteError) {
       console.error('Error deleting user:', deleteError);
@@ -125,7 +125,7 @@ serve(async (req) => {
       );
     }
 
-    console.log('User deleted successfully:', userId);
+    console.log('User deleted successfully:', user_id);
 
     return new Response(
       JSON.stringify({ success: true, message: 'Usuário removido com sucesso' }), 
