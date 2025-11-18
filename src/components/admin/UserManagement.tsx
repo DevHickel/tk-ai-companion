@@ -37,6 +37,22 @@ export function UserManagement() {
 
   useEffect(() => {
     fetchUsers();
+    
+    // Setup realtime subscription for profile changes
+    const profilesSubscription = supabase
+      .channel('profiles-changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'profiles' }, 
+        () => {
+          fetchUsers();
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on unmount
+    return () => {
+      profilesSubscription.unsubscribe();
+    };
   }, []);
 
   async function fetchUsers() {
