@@ -329,7 +329,7 @@ export function UserManagement() {
                       <TableCell className="font-medium">{user.email}</TableCell>
                       <TableCell>{user.full_name || "—"}</TableCell>
                       <TableCell>
-                        {user.account_status === 'Cadastrado' ? (
+                        {user.last_sign_in_at ? (
                           <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800 border border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-500/30">
                             Cadastrado
                           </span>
