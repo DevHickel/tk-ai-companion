@@ -58,24 +58,15 @@ export function UserManagement() {
 
   async function fetchUsers() {
     try {
-      // First get all profiles
+      // Get all profiles with explicit last_sign_in_at column
       const { data: profilesData, error: profilesError } = await supabase
         .from("profiles")
-        .select("*")
+        .select("id, email, full_name, account_status, last_sign_in_at")
         .order("email");
 
       if (profilesError) throw profilesError;
 
-      // Get user metadata from auth.users (last sign in)
-      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
-
-      if (authError) {
-        console.error("Error fetching auth users:", authError);
-      }
-
-      const authUsers = authData?.users || [];
-
-      // Then get all user roles
+      // Get all user roles
       const { data: rolesData, error: rolesError } = await supabase
         .from("user_roles")
         .select("*");
@@ -84,10 +75,8 @@ export function UserManagement() {
 
       // Combine the data
       const combinedData = (profilesData || []).map((profile) => {
-        const authUser = authUsers.find((u) => u.id === profile.id);
         return {
           ...profile,
-          last_sign_in_at: authUser?.last_sign_in_at || null,
           user_roles: (rolesData || [])
             .filter((role) => role.user_id === profile.id)
             .map((role) => ({ role: role.role })),
