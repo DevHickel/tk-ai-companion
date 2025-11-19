@@ -238,6 +238,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          last_sign_in_at: string | null
           points: number
           role: Database["public"]["Enums"]["user_role"]
           theme_preference: string | null
@@ -248,6 +249,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          last_sign_in_at?: string | null
           points?: number
           role?: Database["public"]["Enums"]["user_role"]
           theme_preference?: string | null
@@ -258,6 +260,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          last_sign_in_at?: string | null
           points?: number
           role?: Database["public"]["Enums"]["user_role"]
           theme_preference?: string | null
